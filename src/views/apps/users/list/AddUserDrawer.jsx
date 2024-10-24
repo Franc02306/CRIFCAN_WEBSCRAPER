@@ -31,15 +31,10 @@ import {
   addUser,
   getIdentification,
   getSystemRoles,
-  getCountry,
   updateUserById,
   getUserById,
   updateUserByIdPatch
-} from '../../../../service/userService'
-
-import { getInstitutions } from '../../../../service/institutionService'
-
-import { getCustomGroups } from '../../../../service/groupService'
+} from '../../../../Service/userService'
 
 const TabPanel = ({ children, value, index }) => {
   return (
@@ -178,28 +173,6 @@ const AddUserDrawer = ({ open, setOpen, handleUserAdded, id, user, mode }) => {
     }
   };
 
-  const listInstitutions = async () => {
-    try {
-      const response = await getInstitutions()
-
-      console.log(response.data.results)
-
-      setInstitutions(response.data.results)
-    } catch (error) {
-      console.error('Error en la solicitud:', error)
-    }
-  }
-
-  const getCountries = async () => {
-    try {
-      const response = await getCountry();
-
-      setCountries(response.data.results);
-    } catch (error) {
-      console.error('Error en la solicitud:', error);
-    }
-  };
-
   const fetchRoles = async () => {
     try {
       const response = await getSystemRoles()
@@ -212,8 +185,6 @@ const AddUserDrawer = ({ open, setOpen, handleUserAdded, id, user, mode }) => {
 
   useEffect(() => {
     getIdentifications()
-    listInstitutions()
-    getCountries()
     fetchRoles()
   }, [])
 

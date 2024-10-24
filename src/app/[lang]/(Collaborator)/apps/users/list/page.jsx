@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 
 import UserList from '@views/apps/users/list'
-import { listUser } from '../../../../../../service/userService'
+import { listUser } from '../../../../../../Service/userService'
 
 const UserListApp = () => {
   const [users, setUsers] = useState([])

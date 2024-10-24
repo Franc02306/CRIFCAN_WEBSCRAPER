@@ -13,9 +13,6 @@ import SearchIcon from '@mui/icons-material/Search' // Importa el icono de búsq
 import AppReactDatepicker from '@/libs/styles/AppReactDatepicker';
 import AddUserDrawer from './AddUserDrawer'
 
-import { getInstitutions } from '@/service/institutionService'
-import { getCountry } from '@/service/userService';
-
 dayjs.locale('es')
 
 const FormList = ({ onSearch, onDateFilter, onCreate, users, handleUserAdded }) => {
@@ -30,31 +27,6 @@ const FormList = ({ onSearch, onDateFilter, onCreate, users, handleUserAdded }) 
   console.log('Data de users:', users)
 
   // const [statusFilter, setStatusFilter] = useState('')
-
-  const fetchInstitutions = async () => {
-    try {
-      const response = await getInstitutions();
-
-      setInstitutions(response.data.results);
-    } catch (error) {
-      console.error("Error al obtener las instituciones: ", error);
-    }
-  }
-
-  const fetchCountries = async () => {
-    try {
-      const response = await getCountry();
-
-      setCountries(response.data.results);
-    } catch (error) {
-      console.error("Error al obtener los paises: ", error);
-    }
-  }
-
-  useEffect(() => {
-    fetchInstitutions();
-    fetchCountries();
-  }, [])
 
   useEffect(() => {
     onSearch(emailFilter, institutionFilter, countryFilter) // Filtrar por correo, institución y país

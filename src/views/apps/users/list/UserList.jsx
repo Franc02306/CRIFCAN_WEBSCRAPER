@@ -24,7 +24,7 @@ import Swal from 'sweetalert2'
 import AddUserDrawer from './AddUserDrawer'
 import { getLocalizedUrl } from '@/utils/i18n'
 
-import { deleteUser } from '../../../../service/userService'
+// import { deleteUser } from '../../../../service/userService'
 
 const Tablelist = ({ initialUsers, onDelete, handleUserAdded }) => {
   const [page, setPage] = useState(0)

@@ -37,13 +37,33 @@ const getLocale = request => {
   return locale
 }
 
+// DESCOMENTAR LO DE ABAJO CUANDO TENGAS LA API
+
+// const localizedRedirect = (url, locale, request) => {
+//   let _url = url
+//   const isLocaleMissing = isUrlMissingLocale(_url)
+
+//   if (isLocaleMissing) {
+//     // e.g. incoming request is /products
+//     // The new URL is now /en/products
+//     _url = getLocalizedUrl(_url, locale ?? i18n.defaultLocale)
+//   }
+
+//   let _basePath = process.env.BASEPATH ?? ''
+
+//   _basePath = _basePath.replace('demo-1', request.headers.get('X-server-header') ?? 'demo-1')
+//   _url = ensurePrefix(_url, `${_basePath ?? ''}`)
+//   const redirectUrl = new URL(_url, request.url).toString()
+
+//   return NextResponse.redirect(redirectUrl)
+// }
+
+// Redirección localizada opcional (no se usa en este caso)
 const localizedRedirect = (url, locale, request) => {
   let _url = url
   const isLocaleMissing = isUrlMissingLocale(_url)
 
   if (isLocaleMissing) {
-    // e.g. incoming request is /products
-    // The new URL is now /en/products
     _url = getLocalizedUrl(_url, locale ?? i18n.defaultLocale)
   }
 
@@ -56,87 +76,101 @@ const localizedRedirect = (url, locale, request) => {
   return NextResponse.redirect(redirectUrl)
 }
 
-export default withAuth(
-  async function middleware(request) {
-    // Get locale from request headers
-    const locale = getLocale(request)
-    const pathname = request.nextUrl.pathname
+// Middleware principal
+export default async function middleware(request) {
+  const locale = getLocale(request)
+  const pathname = request.nextUrl.pathname
 
-    // If the user is logged in, `token` will be an object containing the user's details
-    const token = request.nextauth.token
+  // **Cambio importante: Permitir acceso sin verificar autenticación**
+  console.log(`Accediendo a la ruta: ${pathname}`)
 
-    // Check if the user is logged in
-    const isUserLoggedIn = !!token
+  // Permitir acceso a cualquier ruta sin restricciones
+  return NextResponse.next()
+}
 
-    // Guest routes (Routes that can be accessed by guest users who are not logged in)
-    const guestRoutes = ['login', 'register', 'forgot-password']
+// DESCOMENTAR LO DE ABAJO CUANDO TENGAS LA API
 
-    // Shared routes (Routes that can be accessed by both guest and logged in users)
-    const sharedRoutes = ['shared-route']
+// export default withAuth(
+//   async function middleware(request) {
+//     // Get locale from request headers
+//     const locale = getLocale(request)
+//     const pathname = request.nextUrl.pathname
 
-    // Private routes (All routes except guest and shared routes that can only be accessed by logged in users)
-    const privateRoute = ![...guestRoutes, ...sharedRoutes].some(route => pathname.endsWith(route))
+//     // If the user is logged in, `token` will be an object containing the user's details
+//     const token = request.nextauth.token
 
-    // If the user is not logged in and is trying to access a private route, redirect to the login page
-    if (!isUserLoggedIn && privateRoute && !pathname.endsWith('/login')) {
-      let redirectUrl = '/login';
+//     // Check if the user is logged in
+//     const isUserLoggedIn = !!token
 
-      if (!(pathname === '/' || pathname === `/${locale}`)) {
-        const searchParamsStr = new URLSearchParams({ redirectTo: withoutSuffix(pathname, '/') }).toString();
+//     // Guest routes (Routes that can be accessed by guest users who are not logged in)
+//     const guestRoutes = ['login', 'register', 'forgot-password']
 
-        redirectUrl += `?${searchParamsStr}`;
-      }
+//     // Shared routes (Routes that can be accessed by both guest and logged in users)
+//     const sharedRoutes = ['shared-route']
 
-      return localizedRedirect(redirectUrl, locale, request);
-    }
+//     // Private routes (All routes except guest and shared routes that can only be accessed by logged in users)
+//     const privateRoute = ![...guestRoutes, ...sharedRoutes].some(route => pathname.endsWith(route))
 
-    console.log('isUserLoggedIn:', isUserLoggedIn);
-    console.log('pathname:', pathname);
-    console.log('privateRoute:', privateRoute);
+//     // If the user is not logged in and is trying to access a private route, redirect to the login page
+//     if (!isUserLoggedIn && privateRoute && !pathname.endsWith('/login')) {
+//       let redirectUrl = '/login';
 
-    // Si el usuario no está logueado y está tratando de acceder a una ruta privada
-    if (!isUserLoggedIn && privateRoute && !pathname.endsWith('/login')) {
-      let redirectUrl = '/login';
+//       if (!(pathname === '/' || pathname === `/${locale}`)) {
+//         const searchParamsStr = new URLSearchParams({ redirectTo: withoutSuffix(pathname, '/') }).toString();
 
-      if (!(pathname === '/' || pathname === `/${locale}`)) {
-        const searchParamsStr = new URLSearchParams({ redirectTo: withoutSuffix(pathname, '/') }).toString();
+//         redirectUrl += `?${searchParamsStr}`;
+//       }
+
+//       return localizedRedirect(redirectUrl, locale, request);
+//     }
+
+//     console.log('isUserLoggedIn:', isUserLoggedIn);
+//     console.log('pathname:', pathname);
+//     console.log('privateRoute:', privateRoute);
+
+//     // Si el usuario no está logueado y está tratando de acceder a una ruta privada
+//     if (!isUserLoggedIn && privateRoute && !pathname.endsWith('/login')) {
+//       let redirectUrl = '/login';
+
+//       if (!(pathname === '/' || pathname === `/${locale}`)) {
+//         const searchParamsStr = new URLSearchParams({ redirectTo: withoutSuffix(pathname, '/') }).toString();
         
-        redirectUrl += `?${searchParamsStr}`;
-      }
+//         redirectUrl += `?${searchParamsStr}`;
+//       }
 
-      return localizedRedirect(redirectUrl, locale, request);
-    }
+//       return localizedRedirect(redirectUrl, locale, request);
+//     }
 
-    // If the user is logged in and is trying to access a guest route, redirect to the root page
-    const isRequestedRouteIsGuestRoute = guestRoutes.some(route => pathname.endsWith(route))
+//     // If the user is logged in and is trying to access a guest route, redirect to the root page
+//     const isRequestedRouteIsGuestRoute = guestRoutes.some(route => pathname.endsWith(route))
 
-    if (pathname.endsWith('/login')) {
-      return NextResponse.next(); // Permitir acceso a /login, sin importar si está autenticado o no
-    }
+//     if (pathname.endsWith('/login')) {
+//       return NextResponse.next(); // Permitir acceso a /login, sin importar si está autenticado o no
+//     }
 
-    if (isUserLoggedIn && isRequestedRouteIsGuestRoute) {
-      return localizedRedirect(HOME_PAGE_URL, locale, request)
-    }
+//     if (isUserLoggedIn && isRequestedRouteIsGuestRoute) {
+//       return localizedRedirect(HOME_PAGE_URL, locale, request)
+//     }
 
-    // If the user is logged in and is trying to access root page, redirect to the home page
-    if (pathname === '/' || pathname === `/${locale}`) {
-      return localizedRedirect(HOME_PAGE_URL, locale, request)
-    }
+//     // If the user is logged in and is trying to access root page, redirect to the home page
+//     if (pathname === '/' || pathname === `/${locale}`) {
+//       return localizedRedirect(HOME_PAGE_URL, locale, request)
+//     }
 
-    // If pathname already contains a locale, return next() else redirect with localized URL
-    return isUrlMissingLocale(pathname) ? localizedRedirect(pathname, locale, request) : NextResponse.next()
-  },
-  {
-    callbacks: {
-      authorized: () => {
-        // This is a work-around for handling redirect on auth pages.
-        // We return true here so that the middleware function above
-        // is always called.
-        return true
-      }
-    }
-  }
-)
+//     // If pathname already contains a locale, return next() else redirect with localized URL
+//     return isUrlMissingLocale(pathname) ? localizedRedirect(pathname, locale, request) : NextResponse.next()
+//   },
+//   {
+//     callbacks: {
+//       authorized: () => {
+//         // This is a work-around for handling redirect on auth pages.
+//         // We return true here so that the middleware function above
+//         // is always called.
+//         return true
+//       }
+//     }
+//   }
+// )
 
 // Matcher Config
 export const config = {
