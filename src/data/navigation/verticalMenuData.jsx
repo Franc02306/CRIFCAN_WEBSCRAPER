@@ -24,6 +24,11 @@ const verticalMenuData = (dictionary, params, session) => [
         label: dictionary['navigation'].usuarios,
         icon: 'tabler-users',
         href: `/en/apps/users/list`,
+      },
+      {
+        label: dictionary['navigation'].scraping,
+        icon: 'tabler-settings',
+        href: `/en/apps/scraping/params-list`,
       }
     ]
   },

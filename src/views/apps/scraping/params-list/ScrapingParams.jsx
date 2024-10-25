@@ -20,22 +20,19 @@ import {
   Box,
   TableSortLabel,
   Button,
-  Tooltip
+  Tooltip,
+	MenuItem,
+	Select
 } from '@mui/material'
 
-import { useTheme } from '@emotion/react'
 import Swal from 'sweetalert2'
-import VisibilityIcon from '@mui/icons-material/Visibility'
-import EditIcon from '@mui/icons-material/Edit'
-import DeleteIcon from '@mui/icons-material/Delete'
+import { useTheme } from '@emotion/react'
+
 import AddIcon from '@mui/icons-material/Add'
+import UpdateIcon from '@mui/icons-material/Update'
+import DescriptionIcon from '@mui/icons-material/Description'
 
-import UserModal from '../create/UserModal'
-import { getLocalizedUrl } from '@/utils/i18n'
-
-import { deleteUser } from '../../../../Service/userService'
-
-const UserList = ({ users }) => {
+const ScrapingParams = ({ webSites }) => {
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(5)
   const [order, setOrder] = useState('asc')
@@ -49,39 +46,39 @@ const UserList = ({ users }) => {
     setOrderBy(property)
   }
 
-  const sortedUsers = useMemo(() => {
-    return [...users].sort((a, b) => {
+  const sortedWebSites = useMemo(() => {
+    return [...webSites].sort((a, b) => {
       const valueA = a[orderBy]?.toLowerCase() || ''
       const valueB = b[orderBy]?.toLowerCase() || ''
 
       return order === 'asc' ? valueA.localeCompare(valueB) : valueB.localeCompare(valueA)
     })
-  }, [users, order, orderBy])
+  }, [webSites, order, orderBy])
 
   const handleChangePage = (event, newPage) => setPage(newPage)
-	
+
   const handleChangeRowsPerPage = event => {
     setRowsPerPage(parseInt(event.target.value, 10))
     setPage(0)
   }
 
-  return (
+	return (
     <Paper sx={{ width: '100%', overflow: 'hidden', padding: 3, marginTop: 3 }}>
       <Toolbar sx={{ marginBottom: 2 }}>
         <Typography variant='h5' sx={{ fontWeight: 'bold' }}>
-          Lista de Usuarios
+          Parámetros de Scrapeo
         </Typography>
         <Box sx={{ flexGrow: 1 }} />
         <Button variant='contained' color='primary' startIcon={<AddIcon />}>
-          Agregar Usuario
+          Agregar Parámetro
         </Button>
       </Toolbar>
 
       <TableContainer
         sx={{
           marginTop: 2,
-          borderRadius: 1.5, // Aseguramos que el contenedor de la tabla también sea curvo
-          overflow: 'hidden' // Para que la tabla no sobresalga del borde curvo
+          borderRadius: 1.5, // Curva los bordes del contenedor
+          overflow: 'hidden' // Evita que los elementos se desborden
         }}
       >
         <Table
@@ -96,21 +93,18 @@ const UserList = ({ users }) => {
             <TableRow>
               <TableCell align='center' sx={{ color: theme.palette.primary.contrastText }}>
                 <TableSortLabel
-                  active={orderBy === 'username'}
-                  direction={orderBy === 'username' ? order : 'asc'}
-                  onClick={() => handleRequestSort('username')}
+                  active={orderBy === 'source_web'}
+                  direction={orderBy === 'source_web' ? order : 'asc'}
+                  onClick={() => handleRequestSort('source_web')}
                 >
-                  Nombres
+                  Fuente Web
                 </TableSortLabel>
               </TableCell>
               <TableCell align='center' sx={{ color: theme.palette.primary.contrastText }}>
-                Apellidos
+                Frecuencia de Scraping
               </TableCell>
               <TableCell align='center' sx={{ color: theme.palette.primary.contrastText }}>
-                Correo
-              </TableCell>
-              <TableCell align='center' sx={{ color: theme.palette.primary.contrastText }}>
-                Rol
+                Última Fecha de Scraping
               </TableCell>
               <TableCell align='center' sx={{ color: theme.palette.primary.contrastText }}>
                 Acciones
@@ -119,31 +113,34 @@ const UserList = ({ users }) => {
           </TableHead>
 
           <TableBody>
-            {sortedUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(user => (
+            {sortedWebSites.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(site => (
               <TableRow
-                key={user.id}
+                key={site.id}
                 sx={{
                   '&:hover': { backgroundColor: theme.palette.action.hover }
                 }}
               >
-                <TableCell align='center'>{user.username}</TableCell>
-                <TableCell align='center'>{user.last_name}</TableCell>
-                <TableCell align='center'>{user.email}</TableCell>
-                <TableCell align='center'>{user.role}</TableCell>
+                <TableCell align='center'>{site.source_web}</TableCell>
                 <TableCell align='center'>
-                  <Tooltip title='Ver Usuario'>
-                    <IconButton>
-                      <VisibilityIcon />
+                  <Select
+                    defaultValue={site.frecuency_scrap}
+                    sx={{ width: '80%' }}
+                  >
+                    <MenuItem value="Mensual">Mensual</MenuItem>
+                    <MenuItem value="Trimestral">Trimestral</MenuItem>
+                    <MenuItem value="Semestral">Semestral</MenuItem>
+                  </Select>
+                </TableCell>
+                <TableCell align='center'>{site.last_date}</TableCell>
+                <TableCell align='center'>
+                  <Tooltip title='Actualizar'>
+                    <IconButton color='success'>
+                      <UpdateIcon />
                     </IconButton>
                   </Tooltip>
-                  <Tooltip title='Editar Usuario'>
-                    <IconButton>
-                      <EditIcon />
-                    </IconButton>
-                  </Tooltip>
-                  <Tooltip title='Eliminar Usuario'>
-                    <IconButton>
-                      <DeleteIcon />
+                  <Tooltip title='Registro de Actividad'>
+                    <IconButton color='info'>
+                      <DescriptionIcon />
                     </IconButton>
                   </Tooltip>
                 </TableCell>
@@ -156,15 +153,15 @@ const UserList = ({ users }) => {
       <TablePagination
         rowsPerPageOptions={[5, 10, 25]}
         component='div'
-        count={users.length}
+        count={webSites.length}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
-        labelRowsPerPage='Usuarios por página'
+        labelRowsPerPage='Sitios por página'
       />
     </Paper>
   )
 }
 
-export default UserList
+export default ScrapingParams
