@@ -12,7 +12,7 @@ export const authOptions = {
         console.log("Credentials:", credentials);
 
         try {
-          const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/models/login/`, {
+          const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/login/`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
