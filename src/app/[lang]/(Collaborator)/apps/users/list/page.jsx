@@ -2,41 +2,79 @@
 
 import { useEffect, useState } from 'react'
 
-import UserList from '@views/apps/users/list'
+import { CircularProgress, Box, Typography } from '@mui/material'
+
 import { listUser } from '../../../../../../Service/userService'
 
+import UsersListIndex from '../../../../../../views/apps/users/list/index'
+
+const defaultUsers = [
+  { id: 1, username: 'Juan', last_name: 'Pérez', email: 'juan.perez@example.com', role: 'Administrador' },
+  { id: 2, username: 'Ana', last_name: 'Gómez', email: 'ana.gomez@example.com', role: 'Usuario' },
+  { id: 3, username: 'Carlos', last_name: 'López', email: 'carlos.lopez@example.com', role: 'Moderador' }
+]
+
 const UserListApp = () => {
-  const [users, setUsers] = useState([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const [users] = useState(defaultUsers)
+  const [isLoading] = useState(false) // Desactivamos la carga
+  const [error] = useState(null) // No manejamos errores aquí
 
-  const getListUsers = async () => {
-    try {
-      const response = await listUser();
+  // const getListUsers = async () => {
+  //   try {
+  //     // const response = await listUser()
 
-      console.log(response.data.results);
+  //     setUsers(response.data.results || defaultUsers) // Usa la API o datos por defecto si falla
+  //   } catch (error) {
+  //     console.error('Error en la solicitud:', error)
+  //     setError('Algo salió mal, intenta de nuevo más tarde.')
+  //     setUsers(defaultUsers) // Usa datos de ejemplo si hay error
+  //   } finally {
+  //     setIsLoading(false)
+  //   }
+  // }
 
-      setUsers(response.data.results);
-    } catch (error) {
-      console.error('Error en la solicitud:', error);
-      setError(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  // const handleUserAdded = async () => {
+  //   await getListUsers() // Llamada a la API para obtener la lista actualizada
+  // }
 
-  useEffect(() => {
-    getListUsers();
-  }, []);
+  // useEffect(() => {
+  //   getListUsers()
+  // }, [])
 
-  const handleUserAdded = async () => {
-    await getListUsers(); // Llamada a la API para obtener la lista actualizada
-  };
+  if (isLoading) {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100vh'
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    )
+  }
 
-  if (isLoading) return <div>Loading...</div>
-  if (error) return <div>Error: {error.message}</div>
+  if (error) {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100vh',
+          flexDirection: 'column'
+        }}
+      >
+        <Typography variant='h6' color='error'>
+          {error} {/* Mostrando el mensaje de error personalizado */}
+        </Typography>
+      </Box>
+    )
+  }
 
-  return <UserList users={users} handleUserAdded={handleUserAdded} />;
+  return <UsersListIndex users={users} />
 }
 
 export default UserListApp

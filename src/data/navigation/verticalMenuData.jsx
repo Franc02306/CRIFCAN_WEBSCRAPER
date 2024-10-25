@@ -10,7 +10,7 @@ const verticalMenuData = (dictionary, params, session) => [
   {
     label: dictionary['navigation'].home,
     icon: 'tabler-smart-home',
-    href: `/home/docs`,
+    href: `/en/home/docs`,
     permission: () => true,  // Permiso abierto para todos
   },
 
@@ -23,32 +23,27 @@ const verticalMenuData = (dictionary, params, session) => [
       {
         label: dictionary['navigation'].usuarios,
         icon: 'tabler-users',
-        href: `/apps/users/list`,
-      },
-      {
-        label: dictionary['navigation'].instituciones,
-        icon: 'tabler-scale',
-        href: `/apps/institutions/list`,
+        href: `/en/apps/users/list`,
       }
     ]
   },
 
   // MÓDULOS PARA TODOS LOS USUARIOS
   {
-    label: dictionary['navigation'].modulos,
-    isSection: true,
-    children: [
-      {
-        label: dictionary['navigation'].grupoComite,
-        icon: 'tabler-users-group',
-        href: `/apps/committee-groups/create`,
-      },
-      {
-        label: dictionary['navigation'].documentos,
-        icon: 'tabler-file-text',
-        href: `/apps/documents/list`,
-      }
-    ]
+    // label: dictionary['navigation'].modulos,
+    // isSection: true,
+    // children: [
+    //   {
+    //     label: dictionary['navigation'].grupoComite,
+    //     icon: 'tabler-users-group',
+    //     href: `/apps/committee-groups/create`,
+    //   },
+    //   {
+    //     label: dictionary['navigation'].documentos,
+    //     icon: 'tabler-file-text',
+    //     href: `/apps/documents/list`,
+    //   }
+    // ]
   }
 ];
 
