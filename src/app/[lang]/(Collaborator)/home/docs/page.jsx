@@ -40,10 +40,10 @@ const Page = () => {
         }}
       >
         <Typography variant='h4' align='center'>
-          Bienvenido al portal CRIFCAN
+          Bienvenido al portal Web Scraper
           </Typography>
         <Typography variant='h5' align='center' sx={{ mt: 6, fontWeight: 200 }}>
-          ¡Comienza tu búsqueda ahora y descubre todo lo que el portal CRIFCAN tiene para ofrecer!
+          ¡Comienza tu búsqueda ahora y descubre todo lo que el portal Web Scraper tiene para ofrecer!
         </Typography>
       </Box>
     </div>

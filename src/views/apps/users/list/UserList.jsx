@@ -59,7 +59,7 @@ const UserList = ({ users }) => {
   }, [users, order, orderBy])
 
   const handleChangePage = (event, newPage) => setPage(newPage)
-	
+
   const handleChangeRowsPerPage = event => {
     setRowsPerPage(parseInt(event.target.value, 10))
     setPage(0)
@@ -88,7 +88,10 @@ const UserList = ({ users }) => {
           sx={{
             '& .MuiTableCell-root': {
               border:
-                theme.palette.mode === 'light' ? '1px solid rgba(0, 0, 0, 0.35)' : '1px solid rgba(255, 255, 255, 0.18)'
+                theme.palette.mode === 'light'
+                  ? '1px solid rgba(0, 0, 0, 0.35)'
+                  : '1px solid rgba(255, 255, 255, 0.18)',
+              fontSize: '0.9rem'
             }
           }}
         >
@@ -132,17 +135,17 @@ const UserList = ({ users }) => {
                 <TableCell align='center'>{user.role}</TableCell>
                 <TableCell align='center'>
                   <Tooltip title='Ver Usuario'>
-                    <IconButton>
+                    <IconButton >
                       <VisibilityIcon />
                     </IconButton>
                   </Tooltip>
                   <Tooltip title='Editar Usuario'>
-                    <IconButton>
+                    <IconButton color='info'>
                       <EditIcon />
                     </IconButton>
                   </Tooltip>
                   <Tooltip title='Eliminar Usuario'>
-                    <IconButton>
+                    <IconButton color='error'>
                       <DeleteIcon />
                     </IconButton>
                   </Tooltip>

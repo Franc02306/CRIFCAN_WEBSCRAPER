@@ -13,7 +13,7 @@ import '@/app/globals.css'
 import '@assets/iconify-icons/generated-icons.css'
 
 export const metadata = {
-  title: 'Colaboradores',
+  title: 'Web Scraper',
   description: ''
 }
 

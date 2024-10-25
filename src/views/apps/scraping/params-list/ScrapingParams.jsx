@@ -21,8 +21,8 @@ import {
   TableSortLabel,
   Button,
   Tooltip,
-	MenuItem,
-	Select
+  MenuItem,
+  Select
 } from '@mui/material'
 
 import Swal from 'sweetalert2'
@@ -62,16 +62,16 @@ const ScrapingParams = ({ webSites }) => {
     setPage(0)
   }
 
-	return (
+  return (
     <Paper sx={{ width: '100%', overflow: 'hidden', padding: 3, marginTop: 3 }}>
       <Toolbar sx={{ marginBottom: 2 }}>
         <Typography variant='h5' sx={{ fontWeight: 'bold' }}>
           Parámetros de Scrapeo
         </Typography>
         <Box sx={{ flexGrow: 1 }} />
-        <Button variant='contained' color='primary' startIcon={<AddIcon />}>
+        {/* <Button variant='contained' color='primary' startIcon={<AddIcon />}>
           Agregar Parámetro
-        </Button>
+        </Button> */}
       </Toolbar>
 
       <TableContainer
@@ -85,7 +85,10 @@ const ScrapingParams = ({ webSites }) => {
           sx={{
             '& .MuiTableCell-root': {
               border:
-                theme.palette.mode === 'light' ? '1px solid rgba(0, 0, 0, 0.35)' : '1px solid rgba(255, 255, 255, 0.18)'
+                theme.palette.mode === 'light'
+                  ? '1px solid rgba(0, 0, 0, 0.35)'
+                  : '1px solid rgba(255, 255, 255, 0.18)',
+              fontSize: '0.9rem'
             }
           }}
         >
@@ -122,24 +125,21 @@ const ScrapingParams = ({ webSites }) => {
               >
                 <TableCell align='center'>{site.source_web}</TableCell>
                 <TableCell align='center'>
-                  <Select
-                    defaultValue={site.frecuency_scrap}
-                    sx={{ width: '80%' }}
-                  >
-                    <MenuItem value="Mensual">Mensual</MenuItem>
-                    <MenuItem value="Trimestral">Trimestral</MenuItem>
-                    <MenuItem value="Semestral">Semestral</MenuItem>
+                  <Select defaultValue={site.frecuency_scrap} sx={{ width: '80%' }}>
+                    <MenuItem value='Mensual'>Mensual</MenuItem>
+                    <MenuItem value='Trimestral'>Trimestral</MenuItem>
+                    <MenuItem value='Semestral'>Semestral</MenuItem>
                   </Select>
                 </TableCell>
                 <TableCell align='center'>{site.last_date}</TableCell>
                 <TableCell align='center'>
                   <Tooltip title='Actualizar'>
-                    <IconButton color='success'>
+                    <IconButton color='info'>
                       <UpdateIcon />
                     </IconButton>
                   </Tooltip>
                   <Tooltip title='Registro de Actividad'>
-                    <IconButton color='info'>
+                    <IconButton >
                       <DescriptionIcon />
                     </IconButton>
                   </Tooltip>
