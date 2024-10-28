@@ -18,7 +18,7 @@ const verticalMenuData = (dictionary, params, session) => [
   {
     label: dictionary['navigation'].gestión,
     isSection: true,
-    permission: () => true,  // Permiso abierto para todos
+    permission: () => session?.user?.system_role === 1,  // Permiso abierto para todos
     children: [
       {
         label: dictionary['navigation'].usuarios,

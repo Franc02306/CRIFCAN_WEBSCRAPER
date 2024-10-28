@@ -72,7 +72,9 @@ const errorHandlers = {
 
     if (!newToken) {
       const lang = window.location.pathname.split('/')[1];
+
       console.log(lang)
+      
       // Si no se puede renovar el token, redirigir al login
       Swal.fire({
         title: 'Sesión Expirada',

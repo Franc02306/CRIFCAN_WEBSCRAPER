@@ -41,30 +41,26 @@ const AboutOverview = ({ data }) => {
           <Divider />
           <CardContent className='flex flex-col gap-6'>
             <div className='flex flex-col gap-4'>
-              <Typography className='uppercase' variant='body2' color='Active'>
+              <Typography color='Active'>
                 Nombres completo: {data?.name} {data?.apellidos}
               </Typography>
             </div>
 
             <div className='flex flex-col gap-4'>
-              <Typography className='uppercase' variant='body2' color='Active'>
+              <Typography color='Active'>
                 Email: {data?.email}
-              </Typography>
-            </div>
-            <div className='flex flex-col gap-4'>
-              <Typography className='uppercase' variant='body2' color='Active'>
-                Institución: {data?.institution}
-              </Typography>
-            </div>
-            <div className='flex flex-col gap-4'>
-              <Typography className='uppercase' variant='body2' color='Active'>
-                {data?.identification}: {data?.numero_identification}
               </Typography>
             </div>
 
             <div className='flex flex-col gap-4'>
-              <Typography className='uppercase' variant='body2' color='Active'>
+              <Typography color='Active'>
                 Estado: {data?.is_active ? 'Activo' : 'Desativado'}
+              </Typography>
+            </div>
+
+            <div className='flex flex-col gap-4'>
+              <Typography color='Active'>
+                Rol de Sistema: {data?.system_role_description}
               </Typography>
             </div>
           </CardContent>

@@ -31,6 +31,7 @@ import {
 
 import Swal from 'sweetalert2'
 import { useTheme } from '@emotion/react'
+import { useSession } from 'next-auth/react'
 
 import AddIcon from '@mui/icons-material/Add'
 import UpdateIcon from '@mui/icons-material/Update'
@@ -40,6 +41,7 @@ import DescriptionIcon from '@mui/icons-material/Description'
 
 import ParamsModal from '../create/ParamsModal'
 
+import { scrapWeb } from '../../../../Service/scraperService'
 
 const ScrapingParams = ({ webSites }) => {
   const [page, setPage] = useState(0)
@@ -51,6 +53,10 @@ const ScrapingParams = ({ webSites }) => {
   const [modalMode, setModalMode] = useState('create')
 
   const theme = useTheme()
+
+  const { data: session } = useSession()
+
+  console.log("sesion: ", session)
 
   const handleRequestSort = property => {
     const isAsc = orderBy === property && order === 'asc'
@@ -85,6 +91,48 @@ const ScrapingParams = ({ webSites }) => {
     setSelectedWeb(null)
     setIsModalOpen(false)
     setModalMode('create')
+  }
+
+  const handleScrapSite = async site => {
+    const titleColor = theme.palette.mode === 'dark' ? '#FFFFFF' : '#000000'
+    const backgroundColor = theme.palette.background.paper
+    const confirmButtonColor = theme.palette.primary.main
+    const cancelButtonColor = theme.palette.error.main
+
+    const result = await Swal.fire({
+      html: `<span style="font-family: Arial, sans-serif; font-size: 28px; color: ${titleColor};">¿Quieres ejecutar el scraping para esta fuente?</span>`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, ejecutar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: confirmButtonColor,
+      cancelButtonColor: cancelButtonColor,
+      background: backgroundColor
+    })
+
+    if (result.isConfirmed) {
+      try {
+        const response = await scrapWeb({ url: 'https://www.iucngisd.org/gisd/pdf/100Spanish.pdf' })
+
+        Swal.fire({
+          icon: 'success',
+          html: `<span style="font-family: Arial, sans-serif; font-size: 26px; color: ${titleColor};">Scraping completado con éxito</span>`,
+          confirmButtonColor: confirmButtonColor,
+          background: backgroundColor,
+          timer: 4000
+        })
+
+        console.log('Respuesta de la API:', response.data);
+      } catch (error) {
+        console.error('Error ejecutando el scraping:', error)
+        Swal.fire({
+          icon: 'error',
+          html: `<span style="font-family: Arial, sans-serif; font-size: 26px; color: ${titleColor};">Hubo un error ejecutando el scraping</span>`,
+          confirmButtonColor: confirmButtonColor,
+          background: backgroundColor
+        })
+      }
+    }
   }
 
   return (
@@ -181,7 +229,7 @@ const ScrapingParams = ({ webSites }) => {
                   }}
                 >
                   <TableCell align='center'>{site.source_web}</TableCell>
-                  <TableCell align='center'>Ingresar Data API</TableCell>
+                  <TableCell align='center'>https://www.iucngisd.org/gisd/pdf/100Spanish.pdf</TableCell>
                   <TableCell align='center'>
                     <Select defaultValue={site.frecuency_scrap} sx={{ width: '80%' }}>
                       <MenuItem value='Mensual'>Mensual</MenuItem>
@@ -197,7 +245,7 @@ const ScrapingParams = ({ webSites }) => {
                       </IconButton>
                     </Tooltip>
                     <Tooltip title='Actualizar'>
-                      <IconButton color='success'>
+                      <IconButton color='success' onClick={() => handleScrapSite(site)}>
                         <UpdateIcon />
                       </IconButton>
                     </Tooltip>
@@ -225,7 +273,7 @@ const ScrapingParams = ({ webSites }) => {
         labelRowsPerPage='Sitios por página'
       />
 
-      <ParamsModal 
+      <ParamsModal
         open={isModalOpen}
         setIsModalOpen={setIsModalOpen}
         onClose={handleCloseModal}

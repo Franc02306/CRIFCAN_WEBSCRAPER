@@ -38,9 +38,7 @@ export const authOptions = {
                 apellidos: data.user.last_name,
                 email: data.user.email,
                 system_role: data.user.system_role || [], // Devolvemos el array de cargos
-                institution: data.user.institution?.description || '',
-                identification: data.user.identification_type?.description || '',
-                numero_identification: data.user.number_identification || '',
+                system_role_description: data.user.system_role_description,
                 is_active: data.user.is_active,
                 create_at: data.user.date_joined
               },
@@ -76,9 +74,7 @@ export const authOptions = {
         token.apellidos = user.user.apellidos;
         token.email = user.user.email;
         token.system_role = user.user.system_role || []; // Usamos "system_role" en vez de "cargo"
-        token.institution = user.user.institution;
-        token.identification = user.user.identification;
-        token.numero_identification = user.user.numero_identification;
+        token.system_role_description = user.user.system_role_description;
         token.is_active = user.user.is_active;
         token.create_at = user.user.create_at;
 
@@ -98,9 +94,7 @@ export const authOptions = {
         session.user.apellidos = token.last_name;
         session.user.email = token.email;
         session.user.system_role = token.system_role || []; // Asignar "system_role" correctamente
-        session.user.institution = token.institution;
-        session.user.identification = token.identification;
-        session.user.numero_identification = token.numero_identification;
+        session.user.system_role_description = token.system_role_description;
         session.user.is_active = token.is_active;
         session.user.create_at = token.create_at;
 
