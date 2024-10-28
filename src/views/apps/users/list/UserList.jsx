@@ -54,7 +54,7 @@ const UserList = ({ users, onUserAdded }) => {
   const [emailFilter, setEmailFilter] = useState('')
   const [roleFilter, setRoleFilter] = useState('')
   const [modalMode, setModalMode] = useState('create')
-  
+
   const { lang: locale } = useParams()
   const theme = useTheme()
 
@@ -81,6 +81,49 @@ const UserList = ({ users, onUserAdded }) => {
       return order === 'asc' ? valueA.localeCompare(valueB) : valueB.localeCompare(valueA)
     })
   }, [filteredUsers, order, orderBy])
+
+  const handleDeleteUser = async id => {
+    const titleColor = theme.palette.mode === 'dark' ? '#FFFFFF' : '#000000'
+    const backgroundColor = theme.palette.background.paper
+    const confirmButtonColor = theme.palette.primary.main
+    const cancelButtonColor = theme.palette.error.main
+
+    const result = await Swal.fire({
+      html: `<span style="font-family: Arial, sans-serif; font-size: 28px; color: ${titleColor};">¿Está seguro que desea eliminar este usuario?</span>`,
+      icon: 'warning',
+      showCancelButton: true,
+      showConfirmButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: confirmButtonColor,
+      cancelButtonColor: cancelButtonColor,
+      background: backgroundColor
+    })
+
+    if (result.isConfirmed) {
+      try {
+        await deleteUser(id)
+
+        Swal.fire({
+          icon: 'success',
+          html: `<span style="font-family: Arial, sans-serif; font-size: 26px; color: ${titleColor};">El usuario ha sido eliminado exitosamente</span>`,
+          confirmButtonColor: confirmButtonColor,
+          background: backgroundColor,
+          timer: 4000
+        })
+
+        onUserAdded()
+      } catch (error) {
+        console.error('Error eliminando usuario:', error)
+        Swal.fire({
+          icon: 'error',
+          html: `<span style="font-family: Arial, sans-serif; font-size: 26px; color: ${titleColor};">Error al eliminar Usuario</span>`,
+          confirmButtonColor: confirmButtonColor,
+          background: backgroundColor
+        })
+      }
+    }
+  }
 
   const handleChangePage = (event, newPage) => setPage(newPage)
 
@@ -231,7 +274,7 @@ const UserList = ({ users, onUserAdded }) => {
                       </IconButton>
                     </Tooltip>
                     <Tooltip title='Eliminar Usuario'>
-                      <IconButton color='error'>
+                      <IconButton color='error' onClick={() => handleDeleteUser(user.id)}>
                         <DeleteIcon />
                       </IconButton>
                     </Tooltip>
