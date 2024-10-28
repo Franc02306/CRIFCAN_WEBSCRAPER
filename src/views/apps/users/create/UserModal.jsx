@@ -62,20 +62,25 @@ const UserModal = ({ open, setIsModalOpen, onClose, onUserAdded, user, mode }) =
   const backgroundColor = theme.palette.background.paper
   const confirmButtonColor = theme.palette.primary.main
 
-	const resetForm = () => {
-		setFormData(initialData);
-	};
+  const resetForm = () => {
+    setFormData(initialData)
+  }
 
   const handleClickShowPassword = () => setShowPassword(show => !show)
   const handleClickShowConfirmPassword = () => setShowConfirmPassword(show => !show)
 
   useEffect(() => {
-    if (isEditMode && user) {
-      setFormData(user)
-    } else {
-      setFormData(initialData)
+    if (open && isEditMode && user) {
+      setFormData(user) // Carga los datos del usuario solo si el modal está abierto y es edición
+    } else if (open && !isEditMode) {
+      resetForm() // Limpia el formulario en modo creación
     }
-  }, [user, isEditMode])
+  }, [open, user, isEditMode])
+
+  const handleCloseModal = () => {
+    resetForm()
+    setIsModalOpen(false)
+  }
 
   const validateAndShowWarnings = () => {
     if (!formData.username) {
@@ -222,7 +227,7 @@ const UserModal = ({ open, setIsModalOpen, onClose, onUserAdded, user, mode }) =
       }
 
       onUserAdded() // Refrescar lista de usuarios
-      onClose() // Cerrar el modal
+      handleCloseModal() // Cerrar el modal
     } catch (error) {
       console.error('Error en la solicitud: ', error)
     } finally {
@@ -236,14 +241,14 @@ const UserModal = ({ open, setIsModalOpen, onClose, onUserAdded, user, mode }) =
         open={open}
         onClose={(event, reason) => {
           if (reason !== 'backdropClick') {
-            setIsModalOpen(false)
+            handleCloseModal()
           }
         }}
         fullWidth
         maxWidth='sm'
         PaperProps={{ style: { overflow: 'visible' } }}
       >
-        <DialogCloseButton onClick={onClose} disableRipple>
+        <DialogCloseButton onClick={handleCloseModal} disableRipple>
           <i className='tabler-x' />
         </DialogCloseButton>
 
@@ -331,7 +336,7 @@ const UserModal = ({ open, setIsModalOpen, onClose, onUserAdded, user, mode }) =
         </DialogContent>
 
         <DialogActions sx={{ marginTop: 5 }}>
-          <Button onClick={onClose} color='error' variant='outlined'>
+          <Button onClick={handleCloseModal} color='error' variant='outlined'>
             Cancelar
           </Button>
           <Button onClick={handleSubmit} disabled={isSubmitting} color='primary' variant='contained'>
