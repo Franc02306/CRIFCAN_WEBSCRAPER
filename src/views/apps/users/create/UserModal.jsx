@@ -2,7 +2,7 @@
 
 import React, { useCallback, useEffect, useState } from 'react'
 
-import { IconButton, InputAdornment } from '@mui/material'
+import { Alert, IconButton, InputAdornment, Snackbar } from '@mui/material'
 
 import Dialog from '@mui/material/Dialog'
 import Button from '@mui/material/Button'
@@ -44,15 +44,11 @@ const UserModal = ({ open, setIsModalOpen, onClose, onUserAdded, user, mode }) =
   const [openWarnSnackbar, setOpenWarnSnackbar] = useState(false)
   const [infoMessage, setInfoMessage] = useState('')
   const [openInfoSnackbar, setOpenInfoSnackbar] = useState(false)
+  const [error, setError] = useState(null)
+	const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
-
-  // ESTADOS PARA CONTROLAR ERRORES DE CAMPOS OBLIGATORIOS
-  const [errorUsername, setErrorUsername] = useState(false)
-  const [errorLastName, setErrorLastName] = useState(false)
-  const [errorEmail, setErrorEmail] = useState(false)
-  const [errorPassword, setErrorPassword] = useState(false)
 
   const isEditMode = mode === 'edit'
 
@@ -104,6 +100,13 @@ const UserModal = ({ open, setIsModalOpen, onClose, onUserAdded, user, mode }) =
       return false
     }
 
+		if (!formData.system_role) {
+			setWarnMessage('El campo Rol de Sistema es obligatorio.')
+			setOpenWarnSnackbar(true)
+
+			return false
+		}
+
     if (!formData.password) {
       setWarnMessage('El campo Contraseña es obligatorio.')
       setOpenWarnSnackbar(true)
@@ -121,6 +124,10 @@ const UserModal = ({ open, setIsModalOpen, onClose, onUserAdded, user, mode }) =
   const handleCloseWarningSnackbar = () => {
     setOpenWarnSnackbar(false)
   }
+
+	const handleCloseErrorSnackbar = () => {
+		setOpenErrorSnackbar(false)
+	}
 
   const validateUsername = value => {
     const maxLength = 60
@@ -230,6 +237,15 @@ const UserModal = ({ open, setIsModalOpen, onClose, onUserAdded, user, mode }) =
       handleCloseModal() // Cerrar el modal
     } catch (error) {
       console.error('Error en la solicitud: ', error)
+
+			if (error.response && error.response.data.email) {
+				const emailErrors = error.response.data.email;
+
+				if (emailErrors.includes("user with this email already exists.")) {
+					setError('El correo electrónico ya está en uso.');
+					setOpenErrorSnackbar(true);
+				}
+			}
     } finally {
       setIsSubmitting(false) // Desbloquear botón al terminar la solicitud
     }
@@ -344,6 +360,27 @@ const UserModal = ({ open, setIsModalOpen, onClose, onUserAdded, user, mode }) =
           </Button>
         </DialogActions>
       </Dialog>
+
+			{/* Snackbar para mostrar campos obligatorios */}
+      <Snackbar open={openWarnSnackbar} autoHideDuration={3000} onClose={handleCloseWarningSnackbar}>
+        <Alert onClose={handleCloseWarningSnackbar} severity='warning' sx={{ width: '100%' }}>
+          {warnMessage}
+        </Alert>
+      </Snackbar>
+
+			{/* Snackbar para mostrar errores */}
+      <Snackbar open={openErrorSnackbar} autoHideDuration={3000} onClose={handleCloseErrorSnackbar}>
+        <Alert onClose={handleCloseErrorSnackbar} severity='error' sx={{ width: '100%' }}>
+          {error}
+        </Alert>
+      </Snackbar>
+
+			{/* Snackbar para mostrar la información de límite de caracteres */}
+      <Snackbar open={openInfoSnackbar} autoHideDuration={4000} onClose={handleCloseInfoSnackbar}>
+        <Alert onClose={handleCloseInfoSnackbar} severity='info' sx={{ width: '100%' }}>
+          {infoMessage}
+        </Alert>
+      </Snackbar>
     </>
   )
 }
