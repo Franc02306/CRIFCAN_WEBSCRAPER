@@ -10,24 +10,8 @@ export const getUserById = id => {
 	return API.get(`/api/users/${id}/`);
 };
 
-export const listUserDocId = id => {
-	return API.get(`/usuario/usuario/${id}/`);
-};
-
-export const getIdentification = () => {
-	return API.get(`/api/data/identification/`);
-};
-
 export const getSystemRoles = () => {
 	return API.get(`/api/data/system-roles/`);
-};
-
-export const getPositionId = id => {
-	return API.get(`/api/models/position/${id}/`);
-};
-
-export const getCountry = () => {
-	return API.get(`/api/data/country/`);
 };
 
 
