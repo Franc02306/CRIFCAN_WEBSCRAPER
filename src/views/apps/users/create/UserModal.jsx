@@ -370,21 +370,51 @@ const UserModal = ({ open, setIsModalOpen, onClose, onUserAdded, user, mode }) =
 
       {/* Snackbar para mostrar campos obligatorios */}
       <Snackbar open={openWarnSnackbar} autoHideDuration={3000} onClose={handleCloseWarningSnackbar}>
-        <Alert onClose={handleCloseWarningSnackbar} severity='warning' sx={{ width: '100%' }}>
+        <Alert
+          onClose={handleCloseWarningSnackbar}
+          severity='warning'
+          sx={{
+            width: '100%',
+            backgroundColor: 'rgba(255, 165, 100, 0.7)',
+            color: '#000',
+            fontWeight: '600',
+            boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.9)'
+          }}
+        >
           {warnMessage}
         </Alert>
       </Snackbar>
 
       {/* Snackbar para mostrar errores */}
       <Snackbar open={openErrorSnackbar} autoHideDuration={3000} onClose={handleCloseErrorSnackbar}>
-        <Alert onClose={handleCloseErrorSnackbar} severity='error' sx={{ width: '100%' }}>
+        <Alert
+          onClose={handleCloseErrorSnackbar}
+          severity='error'
+          sx={{
+            width: '100%',
+            backgroundColor: 'rgba(255, 100, 100, 0.8)',
+            color: '#000',
+            fontWeight: '600',
+            boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.9)'
+          }}
+        >
           {error}
         </Alert>
       </Snackbar>
 
       {/* Snackbar para mostrar la información de límite de caracteres */}
       <Snackbar open={openInfoSnackbar} autoHideDuration={4000} onClose={handleCloseInfoSnackbar}>
-        <Alert onClose={handleCloseInfoSnackbar} severity='info' sx={{ width: '100%' }}>
+        <Alert
+          onClose={handleCloseInfoSnackbar}
+          severity='info'
+          sx={{
+            width: '100%',
+            backgroundColor: 'rgba(100, 200, 255, 0.8)',
+            color: '#000',
+            fontWeight: '600',
+            boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.9)'
+          }}
+        >
           {infoMessage}
         </Alert>
       </Snackbar>
