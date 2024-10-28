@@ -107,9 +107,6 @@ export function UserDetail({ id, user }) {
     )
   }
 
-  // Filtra los cargos para eliminar duplicados por id
-  const uniqueCargos = userData?.system_role ? [userData.system_role] : [];
-
   return (
     <>
       <Card>
