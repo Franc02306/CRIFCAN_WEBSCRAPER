@@ -24,7 +24,11 @@ import {
   Grid,
   TextField,
   InputAdornment,
-  Divider
+  Divider,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem
 } from '@mui/material'
 
 import { useTheme } from '@emotion/react'
@@ -50,7 +54,8 @@ const UserList = ({ users, onUserAdded }) => {
   const [emailFilter, setEmailFilter] = useState('')
   const [roleFilter, setRoleFilter] = useState('')
   const [modalMode, setModalMode] = useState('create')
-
+  
+  const { lang: locale } = useParams()
   const theme = useTheme()
 
   const handleRequestSort = property => {
@@ -108,6 +113,7 @@ const UserList = ({ users, onUserAdded }) => {
               size='small'
               value={emailFilter}
               onChange={e => setEmailFilter(e.target.value)}
+              autoComplete='off'
               InputProps={{
                 startAdornment: (
                   <InputAdornment position='start'>
@@ -121,30 +127,23 @@ const UserList = ({ users, onUserAdded }) => {
 
           {/* Filtro por Rol */}
           <Grid item xs={12} md>
-            <TextField
-              label='Buscar por Rol'
-              type='text'
-              size='small'
-              value={roleFilter}
-              onChange={e => setRoleFilter(e.target.value)}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position='start'>
-                    <SearchIcon />
-                  </InputAdornment>
-                )
-              }}
-              style={{ marginRight: '5px', width: '300px' }}
-            />
+            <FormControl fullWidth size='small'>
+              <InputLabel>Filtrar por Rol</InputLabel>
+              <Select
+                value={roleFilter}
+                onChange={e => setRoleFilter(e.target.value)}
+                label='Filtrar por Rol'
+                style={{ marginRight: '5px', width: '300px' }}
+              >
+                <MenuItem value=''>Todos</MenuItem> {/* Opción para limpiar el filtro */}
+                <MenuItem value='Administrador del sistema'>Administrador del sistema</MenuItem>
+                <MenuItem value='Funcionario'>Funcionario</MenuItem>
+              </Select>
+            </FormControl>
           </Grid>
 
           <Grid item xs={12} md='auto'>
-            <Button 
-              variant='contained' 
-              color='primary' 
-              startIcon={<AddIcon />} 
-              onClick={() => handleOpenModal()}
-            >
+            <Button variant='contained' color='primary' startIcon={<AddIcon />} onClick={() => handleOpenModal()}>
               Agregar Usuario
             </Button>
           </Grid>
@@ -221,7 +220,9 @@ const UserList = ({ users, onUserAdded }) => {
                   <TableCell align='center'>
                     <Tooltip title='Ver Usuario'>
                       <IconButton>
-                        <VisibilityIcon />
+                        <Link href={getLocalizedUrl(`apps/users/list/view/${user.id}`, locale)} className='flex'>
+                          <VisibilityIcon />
+                        </Link>
                       </IconButton>
                     </Tooltip>
                     <Tooltip title='Editar Usuario'>

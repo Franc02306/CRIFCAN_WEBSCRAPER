@@ -8,9 +8,9 @@ import dynamic from 'next/dynamic'
 // MUI Imports
 import Grid from '@mui/material/Grid'
 
-// import DetailView from '@views/apps/users/view/detail-view'
+import DetailView from '../../../../../../../../views/apps/users/view/detail-view/index'
 
-import { getUserById } from '../../../../../../../Service/userService'
+import { getUserById } from '../../../../../../../../Service/userService'
 
 const VerPage = ({ params }) => {
   // Vars
@@ -40,7 +40,7 @@ const VerPage = ({ params }) => {
   return (
     <Grid container spacing={6}>
       <Grid item xs={12} lg={4} md={5}>
-        {/* <DetailView user={user} id={id}></DetailView> */}
+        <DetailView user={user} id={id}></DetailView>
       </Grid>
     </Grid>
   )

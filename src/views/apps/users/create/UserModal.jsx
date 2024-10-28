@@ -45,7 +45,7 @@ const UserModal = ({ open, setIsModalOpen, onClose, onUserAdded, user, mode }) =
   const [infoMessage, setInfoMessage] = useState('')
   const [openInfoSnackbar, setOpenInfoSnackbar] = useState(false)
   const [error, setError] = useState(null)
-	const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false)
+  const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -100,14 +100,14 @@ const UserModal = ({ open, setIsModalOpen, onClose, onUserAdded, user, mode }) =
       return false
     }
 
-		if (!formData.system_role) {
-			setWarnMessage('El campo Rol de Sistema es obligatorio.')
-			setOpenWarnSnackbar(true)
+    if (!formData.system_role) {
+      setWarnMessage('El campo Rol de Sistema es obligatorio.')
+      setOpenWarnSnackbar(true)
 
-			return false
-		}
+      return false
+    }
 
-    if (!formData.password) {
+    if (!isEditMode && !formData.password) {
       setWarnMessage('El campo Contraseña es obligatorio.')
       setOpenWarnSnackbar(true)
 
@@ -125,9 +125,9 @@ const UserModal = ({ open, setIsModalOpen, onClose, onUserAdded, user, mode }) =
     setOpenWarnSnackbar(false)
   }
 
-	const handleCloseErrorSnackbar = () => {
-		setOpenErrorSnackbar(false)
-	}
+  const handleCloseErrorSnackbar = () => {
+    setOpenErrorSnackbar(false)
+  }
 
   const validateUsername = value => {
     const maxLength = 60
@@ -208,6 +208,10 @@ const UserModal = ({ open, setIsModalOpen, onClose, onUserAdded, user, mode }) =
       system_role: parseInt(formData.system_role)
     }
 
+    if (isEditMode && !formData.password) {
+      delete payload.password
+    }
+
     try {
       if (isEditMode) {
         await updateUserById(user.id, payload)
@@ -238,14 +242,14 @@ const UserModal = ({ open, setIsModalOpen, onClose, onUserAdded, user, mode }) =
     } catch (error) {
       console.error('Error en la solicitud: ', error)
 
-			if (error.response && error.response.data.email) {
-				const emailErrors = error.response.data.email;
+      if (error.response && error.response.data.email) {
+        const emailErrors = error.response.data.email
 
-				if (emailErrors.includes("user with this email already exists.")) {
-					setError('El correo electrónico ya está en uso.');
-					setOpenErrorSnackbar(true);
-				}
-			}
+        if (emailErrors.includes('user with this email already exists.')) {
+          setError('El correo electrónico ya está en uso.')
+          setOpenErrorSnackbar(true)
+        }
+      }
     } finally {
       setIsSubmitting(false) // Desbloquear botón al terminar la solicitud
     }
@@ -278,6 +282,7 @@ const UserModal = ({ open, setIsModalOpen, onClose, onUserAdded, user, mode }) =
             <Grid item xs={12}>
               <TextField
                 autoFocus
+                autoComplete='off'
                 margin='dense'
                 variant='outlined'
                 label='Nombres'
@@ -291,6 +296,7 @@ const UserModal = ({ open, setIsModalOpen, onClose, onUserAdded, user, mode }) =
             </Grid>
             <Grid item xs={12}>
               <TextField
+                autoComplete='off'
                 margin='dense'
                 variant='outlined'
                 label='Apellido'
@@ -304,6 +310,7 @@ const UserModal = ({ open, setIsModalOpen, onClose, onUserAdded, user, mode }) =
             </Grid>
             <Grid item xs={12}>
               <TextField
+                autoComplete='off'
                 margin='dense'
                 variant='outlined'
                 label='Correo Electrónico'
@@ -361,21 +368,21 @@ const UserModal = ({ open, setIsModalOpen, onClose, onUserAdded, user, mode }) =
         </DialogActions>
       </Dialog>
 
-			{/* Snackbar para mostrar campos obligatorios */}
+      {/* Snackbar para mostrar campos obligatorios */}
       <Snackbar open={openWarnSnackbar} autoHideDuration={3000} onClose={handleCloseWarningSnackbar}>
         <Alert onClose={handleCloseWarningSnackbar} severity='warning' sx={{ width: '100%' }}>
           {warnMessage}
         </Alert>
       </Snackbar>
 
-			{/* Snackbar para mostrar errores */}
+      {/* Snackbar para mostrar errores */}
       <Snackbar open={openErrorSnackbar} autoHideDuration={3000} onClose={handleCloseErrorSnackbar}>
         <Alert onClose={handleCloseErrorSnackbar} severity='error' sx={{ width: '100%' }}>
           {error}
         </Alert>
       </Snackbar>
 
-			{/* Snackbar para mostrar la información de límite de caracteres */}
+      {/* Snackbar para mostrar la información de límite de caracteres */}
       <Snackbar open={openInfoSnackbar} autoHideDuration={4000} onClose={handleCloseInfoSnackbar}>
         <Alert onClose={handleCloseInfoSnackbar} severity='info' sx={{ width: '100%' }}>
           {infoMessage}
