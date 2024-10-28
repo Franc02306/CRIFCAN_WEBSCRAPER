@@ -261,19 +261,19 @@ const UserList = ({ users, onUserAdded }) => {
                   <TableCell align='center'>{user.email}</TableCell>
                   <TableCell align='center'>{user.system_role_description}</TableCell>
                   <TableCell align='center'>
-                    <Tooltip title='Ver Usuario'>
+                    <Tooltip title='Ver'>
                       <IconButton>
                         <Link href={getLocalizedUrl(`apps/users/list/view/${user.id}`, locale)} className='flex'>
                           <VisibilityIcon />
                         </Link>
                       </IconButton>
                     </Tooltip>
-                    <Tooltip title='Editar Usuario'>
+                    <Tooltip title='Editar'>
                       <IconButton color='info' onClick={() => handleOpenModal(user)}>
                         <EditIcon />
                       </IconButton>
                     </Tooltip>
-                    <Tooltip title='Eliminar Usuario'>
+                    <Tooltip title='Eliminar'>
                       <IconButton color='error' onClick={() => handleDeleteUser(user.id)}>
                         <DeleteIcon />
                       </IconButton>
