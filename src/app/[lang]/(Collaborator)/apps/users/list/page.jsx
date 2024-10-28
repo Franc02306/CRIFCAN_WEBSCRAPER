@@ -18,7 +18,9 @@ const UserListApp = () => {
       setIsLoading(true)
       const response = await listUser()
 
-      setUsers(response.data || [])
+      const activeUsers = response.data.filter(user => user.is_active === true)
+
+      setUsers(activeUsers)
     } catch (error) {
       console.error('Error en la solicitud:', error)
       setError('Algo salió mal, intenta de nuevo más tarde.')
