@@ -40,6 +40,13 @@ const CanGpt = () => {
 		);
 	};
 
+	// Detecta la tecla Enter
+	const handleKeyPress = (event) => {
+		if (event.key === 'Enter') {
+			handleSendMessage();
+		}
+	};
+
 	return (
 		<div
 			style={{
@@ -75,6 +82,7 @@ const CanGpt = () => {
 					type="text"
 					value={userInput}
 					onChange={(e) => setUserInput(e.target.value)}
+					onKeyDown={handleKeyPress} // Detectar Enter aquí
 					placeholder="Escribe tu mensaje..."
 					style={{
 						flex: 1,
