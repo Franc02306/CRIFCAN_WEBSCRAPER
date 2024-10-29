@@ -35,20 +35,15 @@ const verticalMenuData = (dictionary, params, session) => [
 
   // MÓDULOS PARA TODOS LOS USUARIOS
   {
-    // label: dictionary['navigation'].modulos,
-    // isSection: true,
-    // children: [
-    //   {
-    //     label: dictionary['navigation'].grupoComite,
-    //     icon: 'tabler-users-group',
-    //     href: `/apps/committee-groups/create`,
-    //   },
-    //   {
-    //     label: dictionary['navigation'].documentos,
-    //     icon: 'tabler-file-text',
-    //     href: `/apps/documents/list`,
-    //   }
-    // ]
+    label: dictionary['navigation'].modulos,
+    isSection: true,
+    children: [
+      {
+        label: dictionary['navigation'].cangpt,
+        icon: 'tabler-robot',
+        href: `/en/apps/can-gpt/chat`,
+      }
+    ]
   }
 ];
 
