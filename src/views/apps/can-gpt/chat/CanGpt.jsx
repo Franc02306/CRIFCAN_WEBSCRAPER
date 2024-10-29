@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 
 import { useTheme, ThemeProvider, createTheme } from '@mui/material/styles';
-import { Box, TextField, Button, Paper, Typography } from '@mui/material';
+import { Box, TextField, Button, Paper, Typography, Chip } from '@mui/material';
 import { MessageBox, MessageList } from 'react-chat-elements';
 import 'react-chat-elements/dist/main.css';
 
@@ -11,6 +11,7 @@ const CanGpt = () => {
 	const theme = useTheme();
 	const [messages, setMessages] = useState([]);
 	const [input, setInput] = useState('');
+	const [showSuggestions, setShowSuggestions] = useState(true);
 
 	const suggestions = [
 		'¿Cómo puedo ayudarte?',
@@ -30,11 +31,17 @@ const CanGpt = () => {
 				},
 			]);
 			setInput('');
+			setShowSuggestions(false); // Ocultar sugerencias al enviar mensaje
 		}
 	};
 
+	const handleSuggestionClick = (suggestion) => {
+		setInput(suggestion);
+		setShowSuggestions(false); // Ocultar sugerencias al seleccionar una
+	};
+
 	useEffect(() => {
-		// Simulación de respuesta automática del sistema (opcional)
+		// Simulación de respuesta automática del sistema
 		if (messages.length > 0 && messages[messages.length - 1].position === 'right') {
 			setTimeout(() => {
 				setMessages((prev) => [
@@ -42,7 +49,7 @@ const CanGpt = () => {
 					{
 						position: 'left',
 						type: 'text',
-						text: 'Hola, ¿en qué puedo ayudarte?.',
+						text: 'Hola, ¿en qué puedo ayudarte?',
 						date: new Date(),
 					},
 				]);
@@ -68,7 +75,7 @@ const CanGpt = () => {
 				align="center"
 				sx={{ color: '#FFFFFF', marginBottom: '1rem' }}
 			>
-				Chat con GPT
+				Chat con CANGPT
 			</Typography>
 
 			{/* Lista de Mensajes */}
@@ -83,12 +90,34 @@ const CanGpt = () => {
 					marginBottom: '1rem',
 				}}
 			>
-				<MessageList
-					className="message-list"
-					lockable={true}
-					toBottomHeight={'100%'}
-					dataSource={messages}
-				/>
+				{showSuggestions ? (
+					<Box sx={{ textAlign: 'center' }}>
+						<Typography sx={{ color: '#FFFFFF', marginBottom: '1rem' }}>
+							¿Qué deseas hacer?
+						</Typography>
+						{suggestions.map((suggestion, index) => (
+							<Chip
+								key={index}
+								label={suggestion}
+								onClick={() => handleSuggestionClick(suggestion)}
+								sx={{
+									margin: '5px',
+									backgroundColor: '#8A56AC',
+									color: '#FFFFFF',
+									'&:hover': { backgroundColor: '#733D9A' },
+								}}
+							/>
+						))}
+					</Box>
+				) : (
+					<MessageList
+						className="message-list"
+						lockable={true}
+						toBottomHeight={'100%'}
+						dataSource={messages}
+						style={{ color: 'black' }}
+					/>
+				)}
 			</Paper>
 
 			{/* Input y Botón de Enviar */}
