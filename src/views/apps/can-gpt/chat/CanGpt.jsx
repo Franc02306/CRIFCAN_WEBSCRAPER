@@ -50,7 +50,7 @@ const CanGpt = () => {
 				padding: '20px',
 			}}
 		>
-			<div style={{ flex: 1, overflowY: 'auto', marginBottom: '10px' }}>
+			<div style={{ overflowY: 'hidden', marginBottom: '10px' }}>
 				{messages.map((message, index) => (
 					<MessageBox
 						key={index}
