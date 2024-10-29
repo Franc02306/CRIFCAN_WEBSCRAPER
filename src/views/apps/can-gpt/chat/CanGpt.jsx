@@ -1,112 +1,124 @@
 'use client'
 
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect, useMemo } from 'react';
 
-import { useTheme } from '@emotion/react'
-import { MessageBox } from 'react-chat-elements';
-
-import { useSession } from 'next-auth/react'
+import { useTheme, ThemeProvider, createTheme } from '@mui/material/styles';
+import { Box, TextField, Button, Paper, Typography } from '@mui/material';
+import { MessageBox, MessageList } from 'react-chat-elements';
 import 'react-chat-elements/dist/main.css';
 
 const CanGpt = () => {
+	const theme = useTheme();
 	const [messages, setMessages] = useState([]);
-	const [userInput, setUserInput] = useState('');
+	const [input, setInput] = useState('');
 
-	const handleSendMessage = async () => {
-		if (userInput.trim() === '') return;
+	const suggestions = [
+		'¿Cómo puedo ayudarte?',
+		'Muéstrame las plagas disponibles',
+		'Realiza una búsqueda sobre cultivos',
+	];
 
-		// Agrega el mensaje del usuario
-		const newMessages = [
-			...messages,
-			{ position: 'right', type: 'text', text: userInput, date: new Date() }
-		];
-
-		setMessages(newMessages);
-		setUserInput('');
-
-		// Simula una respuesta del asistente (GPT)
-		const response = await fakeGptResponse(userInput);
-
-		// Agrega la respuesta del asistente
-		setMessages((prevMessages) => [
-			...prevMessages,
-			{ position: 'left', type: 'text', text: response, date: new Date() }
-		]);
-	};
-
-	const fakeGptResponse = async (input) => {
-		return new Promise((resolve) =>
-			setTimeout(() => resolve(`Hola , ¿en qué puedo ayudarte?`), 1000)
-		);
-	};
-
-	// Detecta la tecla Enter
-	const handleKeyPress = (event) => {
-		if (event.key === 'Enter') {
-			handleSendMessage();
+	const handleSendMessage = () => {
+		if (input.trim()) {
+			setMessages((prev) => [
+				...prev,
+				{
+					position: 'right',
+					type: 'text',
+					text: input,
+					date: new Date(),
+				},
+			]);
+			setInput('');
 		}
 	};
 
+	useEffect(() => {
+		// Simulación de respuesta automática del sistema (opcional)
+		if (messages.length > 0 && messages[messages.length - 1].position === 'right') {
+			setTimeout(() => {
+				setMessages((prev) => [
+					...prev,
+					{
+						position: 'left',
+						type: 'text',
+						text: 'Hola, ¿en qué puedo ayudarte?.',
+						date: new Date(),
+					},
+				]);
+			}, 1000);
+		}
+	}, [messages]);
+
 	return (
-		<div
-			style={{
+		<Box
+			sx={{
 				display: 'flex',
 				flexDirection: 'column',
 				justifyContent: 'space-between',
-				height: '100vh',
-				padding: '20px',
+				height: '100%',
+				padding: '1rem',
+				backgroundColor: '#1B1E34', // Fondo similar al mostrado en la imagen
+				borderRadius: '12px',
 			}}
 		>
-			<div style={{ overflowY: 'hidden', marginBottom: '10px' }}>
-				{messages.map((message, index) => (
-					<MessageBox
-						key={index}
-						position={message.position}
-						type={message.type}
-						text={message.text}
-						date={message.date}
-						styles={{
-							color: 'black',
-						}}
-					/>
-				))}
-			</div>
-			<div
-				style={{
-					display: 'flex',
-					alignItems: 'center',
-					padding: '10px 0',
+			{/* Título del Chat */}
+			<Typography
+				variant="h6"
+				align="center"
+				sx={{ color: '#FFFFFF', marginBottom: '1rem' }}
+			>
+				Chat con GPT
+			</Typography>
+
+			{/* Lista de Mensajes */}
+			<Paper
+				elevation={3}
+				sx={{
+					flexGrow: 1,
+					overflowY: 'auto',
+					backgroundColor: '#2A2D45',
+					borderRadius: '12px',
+					padding: '1rem',
+					marginBottom: '1rem',
 				}}
 			>
-				<input
-					type="text"
-					value={userInput}
-					onChange={(e) => setUserInput(e.target.value)}
-					onKeyDown={handleKeyPress} // Detectar Enter aquí
-					placeholder="Escribe tu mensaje..."
-					style={{
-						flex: 1,
-						marginRight: '10px',
-						padding: '10px',
-						borderRadius: '5px',
-						border: '1px solid #ccc',
+				<MessageList
+					className="message-list"
+					lockable={true}
+					toBottomHeight={'100%'}
+					dataSource={messages}
+				/>
+			</Paper>
+
+			{/* Input y Botón de Enviar */}
+			<Box sx={{ display: 'flex', gap: '8px' }}>
+				<TextField
+					fullWidth
+					variant="outlined"
+					size="small"
+					placeholder="Escribe un mensaje..."
+					value={input}
+					onChange={(e) => setInput(e.target.value)}
+					sx={{
+						input: { color: '#FFFFFF' },
+						backgroundColor: '#2A2D45',
+						borderRadius: '8px',
 					}}
 				/>
-				<button
-					onClick={handleSendMessage}
-					style={{
-						padding: '10px 20px',
-						borderRadius: '5px',
-						backgroundColor: '#4CAF50',
-						color: 'white',
-						border: 'none',
-						cursor: 'pointer',
+				<Button
+					variant="contained"
+					sx={{
+						backgroundColor: '#8A56AC',
+						'&:hover': { backgroundColor: '#733D9A' },
+						borderRadius: '8px',
 					}}
+					onClick={handleSendMessage}
 				>
 					Enviar
-				</button>
-			</div>
-		</div>
+				</Button>
+			</Box>
+		</Box>
 	);
 };
 
