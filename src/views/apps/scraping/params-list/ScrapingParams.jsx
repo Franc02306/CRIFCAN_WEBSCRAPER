@@ -47,7 +47,7 @@ const ScrapingParams = ({ webSites }) => {
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(5)
   const [order, setOrder] = useState('asc')
-  const [orderBy, setOrderBy] = useState('username')
+  const [orderBy, setOrderBy] = useState('Tipo')
   const [selectedWeb, setSelectedWeb] = useState(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [modalMode, setModalMode] = useState('create')
@@ -56,7 +56,7 @@ const ScrapingParams = ({ webSites }) => {
 
   const { data: session } = useSession()
 
-  console.log("sesion: ", session)
+  console.log('sesion: ', session)
 
   const handleRequestSort = property => {
     const isAsc = orderBy === property && order === 'asc'
@@ -81,9 +81,9 @@ const ScrapingParams = ({ webSites }) => {
     setPage(0)
   }
 
-  const handleOpenModal = (user = null) => {
-    setSelectedWeb(user)
-    setModalMode(user ? 'edit' : 'create')
+  const handleOpenModal = (web = null) => {
+    setSelectedWeb(web)
+    setModalMode(web ? 'edit' : 'create')
     setIsModalOpen(true)
   }
 
@@ -112,7 +112,7 @@ const ScrapingParams = ({ webSites }) => {
 
     if (result.isConfirmed) {
       try {
-        const response = await scrapWeb({ url: 'https://www.iucngisd.org/gisd/pdf/100Spanish.pdf' })
+        const response = await scrapWeb({ url: site.Url })
 
         Swal.fire({
           icon: 'success',
@@ -122,7 +122,7 @@ const ScrapingParams = ({ webSites }) => {
           timer: 4000
         })
 
-        console.log('Respuesta de la API:', response.data);
+        console.log('Respuesta de la API:', response.data)
       } catch (error) {
         console.error('Error ejecutando el scraping:', error)
         Swal.fire({
@@ -202,17 +202,20 @@ const ScrapingParams = ({ webSites }) => {
                     direction={orderBy === 'source_web' ? order : 'asc'}
                     onClick={() => handleRequestSort('source_web')}
                   >
-                    Fuente Web
+                    Tipo
                   </TableSortLabel>
                 </TableCell>
                 <TableCell align='center' sx={{ color: theme.palette.primary.contrastText }}>
                   Enlace Web
                 </TableCell>
                 <TableCell align='center' sx={{ color: theme.palette.primary.contrastText }}>
-                  Frecuencia de Scraping
+                  Frecuencia de Scrapeo
                 </TableCell>
                 <TableCell align='center' sx={{ color: theme.palette.primary.contrastText }}>
-                  Última Fecha de Scraping
+                  Última Fecha de Scrapeo
+                </TableCell>
+                <TableCell align='center' sx={{ color: theme.palette.primary.contrastText }}>
+                  Etiquetas
                 </TableCell>
                 <TableCell align='center' sx={{ color: theme.palette.primary.contrastText }}>
                   Acciones
@@ -223,21 +226,22 @@ const ScrapingParams = ({ webSites }) => {
             <TableBody>
               {sortedWebSites.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(site => (
                 <TableRow
-                  key={site.id}
+                  key={site.Objeto}
                   sx={{
                     '&:hover': { backgroundColor: theme.palette.action.hover }
                   }}
                 >
-                  <TableCell align='center'>{site.source_web}</TableCell>
-                  <TableCell align='center'>https://www.iucngisd.org/gisd/pdf/100Spanish.pdf</TableCell>
+                  <TableCell align='center'>{site.Tipo}</TableCell>
+                  <TableCell align='center'>{site.Url}</TableCell>
                   <TableCell align='center'>
-                    <Select defaultValue={site.frecuency_scrap} sx={{ width: '80%' }}>
+                    <Select sx={{ width: '80%' }}>
                       <MenuItem value='Mensual'>Mensual</MenuItem>
                       <MenuItem value='Trimestral'>Trimestral</MenuItem>
                       <MenuItem value='Semestral'>Semestral</MenuItem>
                     </Select>
                   </TableCell>
-                  <TableCell align='center'>{site.last_date}</TableCell>
+                  <TableCell align='center'>{site.Fecha_scrapper}</TableCell>
+                  <TableCell align='center'>{site.Etiquetas.join(', ')}</TableCell>
                   <TableCell align='center'>
                     <Tooltip title='Editar'>
                       <IconButton color='info' onClick={() => handleOpenModal(site)}>

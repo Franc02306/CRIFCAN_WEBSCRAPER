@@ -33,16 +33,19 @@ import {
 
 import { useTheme } from '@emotion/react'
 import Swal from 'sweetalert2'
+
+// ICONS
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
+import RestoreFromTrashIcon from '@mui/icons-material/RestoreFromTrash'
 import AddIcon from '@mui/icons-material/Add'
 import SearchIcon from '@mui/icons-material/Search'
 
 import UserModal from '../create/UserModal'
 import { getLocalizedUrl } from '@/utils/i18n'
 
-import { deleteUser } from '../../../../Service/userService'
+import { deleteUser, updateUserById } from '../../../../Service/userService'
 
 const UserList = ({ users, onUserAdded, getListUsers, statusFilter }) => {
   const [page, setPage] = useState(0)
@@ -57,6 +60,12 @@ const UserList = ({ users, onUserAdded, getListUsers, statusFilter }) => {
 
   const { lang: locale } = useParams()
   const theme = useTheme()
+
+  // VARIABLES PARA EL TEMA SWAL
+  const titleColor = theme.palette.mode === 'dark' ? '#FFFFFF' : '#000000'
+  const backgroundColor = theme.palette.background.paper
+  const confirmButtonColor = theme.palette.primary.main
+  const cancelButtonColor = theme.palette.error.main
 
   const handleStatusChange = event => {
     const newStatus = event.target.value
@@ -89,11 +98,6 @@ const UserList = ({ users, onUserAdded, getListUsers, statusFilter }) => {
   }, [filteredUsers, order, orderBy])
 
   const handleDeleteUser = async id => {
-    const titleColor = theme.palette.mode === 'dark' ? '#FFFFFF' : '#000000'
-    const backgroundColor = theme.palette.background.paper
-    const confirmButtonColor = theme.palette.primary.main
-    const cancelButtonColor = theme.palette.error.main
-
     const result = await Swal.fire({
       html: `<span style="font-family: Arial, sans-serif; font-size: 28px; color: ${titleColor};">¿Está seguro que desea eliminar este usuario?</span>`,
       icon: 'warning',
@@ -123,7 +127,45 @@ const UserList = ({ users, onUserAdded, getListUsers, statusFilter }) => {
         console.error('Error eliminando usuario:', error)
         Swal.fire({
           icon: 'error',
-          html: `<span style="font-family: Arial, sans-serif; font-size: 26px; color: ${titleColor};">Error al eliminar Usuario</span>`,
+          html: `<span style="font-family: Arial, sans-serif; font-size: 26px; color: ${titleColor};">Error al restaurar Usuario</span>`,
+          confirmButtonColor: confirmButtonColor,
+          background: backgroundColor
+        })
+      }
+    }
+  }
+
+  const handleRestoreUser = async id => {
+    const result = await Swal.fire({
+      html: `<span style="font-family: Arial, sans-serif; font-size: 28px; color: ${titleColor};">¿Está seguro que desea restaurar este usuario?</span>`,
+      icon: 'warning',
+      showCancelButton: true,
+      showConfirmButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: confirmButtonColor,
+      cancelButtonColor: cancelButtonColor,
+      background: backgroundColor
+    })
+
+    if (result.isConfirmed) {
+      try {
+        await updateUserById(id)
+
+        Swal.fire({
+          icon: 'success',
+          html: `<span style="font-family: Arial, sans-serif; font-size: 26px; color: ${titleColor};">El usuario ha sido restaurado exitosamente</span>`,
+          confirmButtonColor: confirmButtonColor,
+          background: backgroundColor,
+          timer: 4000
+        })
+
+        onUserAdded()
+      } catch (error) {
+        console.error('Error eliminando usuario:', error)
+        Swal.fire({
+          icon: 'error',
+          html: `<span style="font-family: Arial, sans-serif; font-size: 26px; color: ${titleColor};">Error al restaurar Usuario</span>`,
           confirmButtonColor: confirmButtonColor,
           background: backgroundColor
         })
@@ -204,12 +246,19 @@ const UserList = ({ users, onUserAdded, getListUsers, statusFilter }) => {
       </Box>
 
       <Box sx={{ padding: 5 }}>
-        <Grid container spacing={2} alignItems='center' sx={{ marginBottom: 2 }}>
-          <Typography variant='h5' sx={{ fontWeight: 'bold', marginLeft: '12px', marginBottom: '10px' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: 3
+          }}
+        >
+          <Typography variant='h5' sx={{ fontWeight: 'bold', marginLeft: '2px', marginBottom: '10px' }}>
             Lista de Usuarios
           </Typography>
 
-          <FormControl sx={{ minWidth: 230, marginRight: 3 }} size='small'>
+          <FormControl sx={{ minWidth: 230 }} size='small'>
             <InputLabel>Filtrar por Estado</InputLabel>
             <Select
               value={statusFilter} // Usamos `statusFilter` como el valor actual
@@ -220,7 +269,7 @@ const UserList = ({ users, onUserAdded, getListUsers, statusFilter }) => {
               <MenuItem value='Inactivos'>Inactivos</MenuItem>
             </Select>
           </FormControl>
-        </Grid>
+        </Box>
 
         <TableContainer
           component={Paper}
@@ -312,11 +361,19 @@ const UserList = ({ users, onUserAdded, getListUsers, statusFilter }) => {
                           <EditIcon />
                         </IconButton>
                       </Tooltip>
-                      <Tooltip title='Eliminar'>
-                        <IconButton color='error' onClick={() => handleDeleteUser(user.id)}>
-                          <DeleteIcon />
-                        </IconButton>
-                      </Tooltip>
+                      {user.is_active ? (
+                        <Tooltip title='Eliminar'>
+                          <IconButton color='error' onClick={() => handleDeleteUser(user.id)}>
+                            <DeleteIcon />
+                          </IconButton>
+                        </Tooltip>
+                      ) : (
+                        <Tooltip title='Restaurar'>
+                          <IconButton color='success' onClick={() => handleRestoreUser(user.id)}>
+                            <RestoreFromTrashIcon />
+                          </IconButton>
+                        </Tooltip>
+                      )}
                     </TableCell>
                   </TableRow>
                 ))
