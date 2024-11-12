@@ -54,10 +54,6 @@ const ScrapingParams = ({ webSites }) => {
 
   const theme = useTheme()
 
-  const { data: session } = useSession()
-
-  console.log('sesion: ', session)
-
   const handleRequestSort = property => {
     const isAsc = orderBy === property && order === 'asc'
 
@@ -111,6 +107,16 @@ const ScrapingParams = ({ webSites }) => {
     })
 
     if (result.isConfirmed) {
+      Swal.fire({
+        html: `<span style="font-family: Arial, sans-serif; font-size: 28px; color: ${titleColor};">Scrapeando...</span>`,
+        allowOutsideClick: false,
+        showConfirmButton: false,
+        background: backgroundColor,
+        didOpen: () => {
+          Swal.showLoading()
+        }
+      })
+
       try {
         const response = await scrapWeb({ url: site.Url })
 
