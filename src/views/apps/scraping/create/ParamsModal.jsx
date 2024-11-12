@@ -152,7 +152,14 @@ const ParamsModal = ({ open, setIsModalOpen, onClose, web, mode }) => {
           }
         }}
         fullWidth
-        maxWidth='sm'
+        maxWidth='xl'
+        sx={{
+          '& .MuiDialog-paper': {
+            height: '90vh', // Ajusta la altura al 80% de la pantalla
+            maxHeight: '90vh', // Define una altura máxima
+            overflow: 'visible'
+          }
+        }}
         PaperProps={{ style: { overflow: 'visible' } }}
       >
         <DialogCloseButton onClick={handleCloseModal} disableRipple>
@@ -165,8 +172,18 @@ const ParamsModal = ({ open, setIsModalOpen, onClose, web, mode }) => {
         </DialogTitle>
 
         <DialogContent dividers>
-          <Box component={Grid} container spacing={3}>
-            <Grid item xs={12}>
+          <Box
+            component={Grid}
+            container
+            spacing={{ xs: 2, sm: 3, md: 4, lg: 10 }}
+            sx={{
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'center', // Centrado vertical
+              height: '67vh' // ESTO AYUDA A POSICIONAR VERTICALMENTE CENTRALMENTE
+            }}
+          >
+            <Grid item xs={12} sx={{ mt: 10 }}>
               <TextField
                 autoFocus
                 autoComplete='off'
