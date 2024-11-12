@@ -265,7 +265,14 @@ const UserModal = ({ open, setIsModalOpen, onClose, onUserAdded, user, mode }) =
           }
         }}
         fullWidth
-        maxWidth='sm'
+        maxWidth='xl'
+        sx={{
+          '& .MuiDialog-paper': {
+            height: '90vh', // Ajusta la altura al 80% de la pantalla
+            maxHeight: '90vh', // Define una altura máxima
+            overflow: 'visible'
+          }
+        }}
         PaperProps={{ style: { overflow: 'visible' } }}
       >
         <DialogCloseButton onClick={handleCloseModal} disableRipple>
@@ -278,8 +285,18 @@ const UserModal = ({ open, setIsModalOpen, onClose, onUserAdded, user, mode }) =
         </DialogTitle>
 
         <DialogContent dividers>
-          <Box component={Grid} container spacing={3}>
-            <Grid item xs={12}>
+          <Box
+            component={Grid}
+            container
+            spacing={{ xs: 2, sm: 3, md: 4, lg: 10 }}
+            sx={{
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'center', // Centrado vertical
+              height: '65vh', // ESTO AYUDA A POSICIONAR VERTICALMENTE CENTRALMENTE
+            }}
+          >
+            <Grid item xs={12} sx={{ mt: 3 }}>
               <TextField
                 autoFocus
                 autoComplete='off'
@@ -335,26 +352,24 @@ const UserModal = ({ open, setIsModalOpen, onClose, onUserAdded, user, mode }) =
                 </Select>
               </FormControl>
             </Grid>
-            {!isEditMode && (
-              <Grid item xs={12} sx={{ marginTop: '5px' }}>
-                <FormControl fullWidth variant='outlined'>
-                  <TextField
-                    label='Contraseña'
-                    value={formData.password}
-                    onChange={e => setFormData({ ...formData, password: e.target.value })}
-                    type={showPassword ? 'text' : 'password'}
-                    autoComplete='new-password'
-                    InputProps={{
-                      endAdornment: (
-                        <IconButton onClick={handleClickShowPassword}>
-                          {showPassword ? <VisibilityOff /> : <Visibility />}
-                        </IconButton>
-                      )
-                    }}
-                  />
-                </FormControl>
-              </Grid>
-            )}
+            <Grid item xs={12} sx={{ marginTop: '5px' }}>
+              <FormControl fullWidth variant='outlined'>
+                <TextField
+                  label='Contraseña'
+                  value={formData.password}
+                  onChange={e => setFormData({ ...formData, password: e.target.value })}
+                  type={showPassword ? 'text' : 'password'}
+                  autoComplete='new-password'
+                  InputProps={{
+                    endAdornment: (
+                      <IconButton onClick={handleClickShowPassword}>
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    )
+                  }}
+                />
+              </FormControl>
+            </Grid>
           </Box>
         </DialogContent>
 
