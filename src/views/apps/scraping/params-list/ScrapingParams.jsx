@@ -100,7 +100,7 @@ const ScrapingParams = ({ webSites }) => {
     const cancelButtonColor = theme.palette.error.main
 
     const result = await Swal.fire({
-      html: `<span style="font-family: Arial, sans-serif; font-size: 28px; color: ${titleColor};">¿Quieres ejecutar el scraping para esta fuente?</span>`,
+      html: `<span style="font-family: Arial, sans-serif; font-size: 28px; color: ${titleColor};">¿Quieres ejecutar el Scrapeo para esta URL?</span>`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Sí, ejecutar',
@@ -116,7 +116,7 @@ const ScrapingParams = ({ webSites }) => {
 
         Swal.fire({
           icon: 'success',
-          html: `<span style="font-family: Arial, sans-serif; font-size: 26px; color: ${titleColor};">Scraping completado con éxito</span>`,
+          html: `<span style="font-family: Arial, sans-serif; font-size: 26px; color: ${titleColor};">Scrapeo completado con éxito</span>`,
           confirmButtonColor: confirmButtonColor,
           background: backgroundColor,
           timer: 4000
@@ -127,7 +127,7 @@ const ScrapingParams = ({ webSites }) => {
         console.error('Error ejecutando el scraping:', error)
         Swal.fire({
           icon: 'error',
-          html: `<span style="font-family: Arial, sans-serif; font-size: 26px; color: ${titleColor};">Hubo un error ejecutando el scraping</span>`,
+          html: `<span style="font-family: Arial, sans-serif; font-size: 26px; color: ${titleColor};">Hubo un error ejecutando el Scrapeo</span>`,
           confirmButtonColor: confirmButtonColor,
           background: backgroundColor
         })
