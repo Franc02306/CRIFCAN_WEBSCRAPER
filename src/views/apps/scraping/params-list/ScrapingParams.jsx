@@ -248,7 +248,7 @@ const ScrapingParams = ({ webSites }) => {
                         <EditIcon />
                       </IconButton>
                     </Tooltip>
-                    <Tooltip title='Actualizar'>
+                    <Tooltip title='Scrapear'>
                       <IconButton color='success' onClick={() => handleScrapSite(site)}>
                         <UpdateIcon />
                       </IconButton>

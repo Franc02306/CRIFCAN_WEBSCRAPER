@@ -9,9 +9,9 @@ import ParamsListIndex from '../../../../../../views/apps/scraping/params-list/i
 import { listScrapingUrl } from '../../../../../../Service/scraperService'
 
 const ParamsListApp = () => {
-	const [webSites, setWebSites] = useState([])
-	const [isLoading, setIsLoading] = useState(false)
-	const [error, setError] = useState(null)
+  const [webSites, setWebSites] = useState([])
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState(null)
 
   const fetchWebSites = async () => {
     try {
@@ -21,13 +21,19 @@ const ParamsListApp = () => {
 
       const filteredWebsites = Object.values(
         response.data.documents.reduce((acc, doc) => {
-          if (!acc[doc.Url] || new Date(doc.Fecha_scrapper) > new Date(acc[doc.Url].Fecha_scrapper)) {
+          const currentDocDate = new Date(doc.Fecha_scrapper)
+          const existingDoc = acc[doc.Url]
+
+          // Verifica si el documento actual es más reciente o si no hay otro con la misma URL
+          if (!existingDoc || currentDocDate > new Date(existingDoc.Fecha_scrapper)) {
             acc[doc.Url] = doc
           }
-          
+
           return acc
         }, {})
       )
+
+      console.log(filteredWebsites);
 
       setWebSites(filteredWebsites)
     } catch (error) {
@@ -42,7 +48,7 @@ const ParamsListApp = () => {
     fetchWebSites()
   }, [])
 
-	if (isLoading) {
+  if (isLoading) {
     return (
       <Box
         sx={{
@@ -57,7 +63,7 @@ const ParamsListApp = () => {
     )
   }
 
-	if (error) {
+  if (error) {
     return (
       <Box
         sx={{
@@ -75,7 +81,7 @@ const ParamsListApp = () => {
     )
   }
 
-	return <ParamsListIndex webSites={webSites} />
+  return <ParamsListIndex webSites={webSites} />
 }
 
 export default ParamsListApp
