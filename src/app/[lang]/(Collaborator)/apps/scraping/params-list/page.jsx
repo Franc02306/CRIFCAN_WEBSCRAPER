@@ -33,8 +33,6 @@ const ParamsListApp = () => {
         }, {})
       )
 
-      console.log(filteredWebsites);
-
       setWebSites(filteredWebsites)
     } catch (error) {
       console.error('Error al obtener los sitios de scraping: ', error)
@@ -81,7 +79,7 @@ const ParamsListApp = () => {
     )
   }
 
-  return <ParamsListIndex webSites={webSites} />
+  return <ParamsListIndex webSites={webSites} fetchWebSites={fetchWebSites} />
 }
 
 export default ParamsListApp

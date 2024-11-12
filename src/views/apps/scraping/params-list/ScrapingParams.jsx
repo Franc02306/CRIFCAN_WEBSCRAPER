@@ -43,7 +43,7 @@ import ParamsModal from '../create/ParamsModal'
 
 import { scrapWeb } from '../../../../Service/scraperService'
 
-const ScrapingParams = ({ webSites }) => {
+const ScrapingParams = ({ webSites, fetchWebSites }) => {
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(5)
   const [order, setOrder] = useState('asc')
@@ -128,7 +128,9 @@ const ScrapingParams = ({ webSites }) => {
           timer: 4000
         })
 
-        console.log('Respuesta de la API:', response.data)
+        // console.log('Respuesta de la API:', response.data)
+
+        fetchWebSites() // Actualización en tiempo real
       } catch (error) {
         console.error('Error ejecutando el scraping:', error)
         Swal.fire({
