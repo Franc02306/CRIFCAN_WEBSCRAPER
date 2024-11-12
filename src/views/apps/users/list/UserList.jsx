@@ -202,6 +202,19 @@ const UserList = ({ users, onUserAdded }) => {
           <Typography variant='h5' sx={{ fontWeight: 'bold', marginLeft: '12px', marginBottom: '10px' }}>
             Lista de Usuarios
           </Typography>
+
+          <FormControl sx={{ minWidth: 230, marginRight: 3 }} size='small'>
+            <InputLabel>Filtrar por Estado</InputLabel>
+            <Select
+            
+              // value={userStatusFilter}
+              // onChange={e => setUserStatusFilter(e.target.value)}
+              label='Filtrar por Estado'
+            >
+              <MenuItem value='Activos'>Activos</MenuItem>
+              <MenuItem value='Inactivos'>Inactivos</MenuItem>
+            </Select>
+          </FormControl>
         </Grid>
 
         <TableContainer
@@ -229,6 +242,18 @@ const UserList = ({ users, onUserAdded }) => {
                     active={orderBy === 'username'}
                     direction={orderBy === 'username' ? order : 'asc'}
                     onClick={() => handleRequestSort('username')}
+                    sx={{
+                      color: theme.palette.primary.contrastText + ' !important',
+                      '& .MuiTableSortLabel-icon': {
+                        color: theme.palette.primary.contrastText + ' !important'
+                      },
+                      '&.Mui-active': {
+                        color: theme.palette.primary.contrastText + ' !important',
+                        '& .MuiTableSortLabel-icon': {
+                          color: theme.palette.primary.contrastText + ' !important'
+                        }
+                      }
+                    }}
                   >
                     Nombres
                   </TableSortLabel>
@@ -249,38 +274,48 @@ const UserList = ({ users, onUserAdded }) => {
             </TableHead>
 
             <TableBody>
-              {sortedUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(user => (
-                <TableRow
-                  key={user.id}
-                  sx={{
-                    '&:hover': { backgroundColor: theme.palette.action.hover }
-                  }}
-                >
-                  <TableCell align='center'>{user.username}</TableCell>
-                  <TableCell align='center'>{user.last_name}</TableCell>
-                  <TableCell align='center'>{user.email}</TableCell>
-                  <TableCell align='center'>{user.system_role_description}</TableCell>
-                  <TableCell align='center'>
-                    <Tooltip title='Ver'>
-                      <IconButton>
-                        <Link href={getLocalizedUrl(`apps/users/list/view/${user.id}`, locale)} className='flex'>
-                          <VisibilityIcon />
-                        </Link>
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip title='Editar'>
-                      <IconButton color='info' onClick={() => handleOpenModal(user)}>
-                        <EditIcon />
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip title='Eliminar'>
-                      <IconButton color='error' onClick={() => handleDeleteUser(user.id)}>
-                        <DeleteIcon />
-                      </IconButton>
-                    </Tooltip>
+              {sortedUsers.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={5} align='center'>
+                    <Typography vaariant='body1' color='secondary'>
+                      Usuario no encontrado
+                    </Typography>
                   </TableCell>
                 </TableRow>
-              ))}
+              ) : (
+                sortedUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(user => (
+                  <TableRow
+                    key={user.id}
+                    sx={{
+                      '&:hover': { backgroundColor: theme.palette.action.hover }
+                    }}
+                  >
+                    <TableCell align='center'>{user.username}</TableCell>
+                    <TableCell align='center'>{user.last_name}</TableCell>
+                    <TableCell align='center'>{user.email}</TableCell>
+                    <TableCell align='center'>{user.system_role_description}</TableCell>
+                    <TableCell align='center'>
+                      <Tooltip title='Ver'>
+                        <IconButton>
+                          <Link href={getLocalizedUrl(`apps/users/list/view/${user.id}`, locale)} className='flex'>
+                            <VisibilityIcon />
+                          </Link>
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title='Editar'>
+                        <IconButton color='info' onClick={() => handleOpenModal(user)}>
+                          <EditIcon />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title='Eliminar'>
+                        <IconButton color='error' onClick={() => handleDeleteUser(user.id)}>
+                          <DeleteIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </TableContainer>
