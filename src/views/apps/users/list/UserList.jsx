@@ -44,7 +44,7 @@ import { getLocalizedUrl } from '@/utils/i18n'
 
 import { deleteUser } from '../../../../Service/userService'
 
-const UserList = ({ users, onUserAdded }) => {
+const UserList = ({ users, onUserAdded, getListUsers, statusFilter }) => {
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(5)
   const [order, setOrder] = useState('asc')
@@ -57,6 +57,12 @@ const UserList = ({ users, onUserAdded }) => {
 
   const { lang: locale } = useParams()
   const theme = useTheme()
+
+  const handleStatusChange = event => {
+    const newStatus = event.target.value
+
+    getListUsers(newStatus) // Llama a `getListUsers` para cambiar el filtro
+  }
 
   const handleRequestSort = property => {
     const isAsc = orderBy === property && order === 'asc'
@@ -206,9 +212,8 @@ const UserList = ({ users, onUserAdded }) => {
           <FormControl sx={{ minWidth: 230, marginRight: 3 }} size='small'>
             <InputLabel>Filtrar por Estado</InputLabel>
             <Select
-            
-              // value={userStatusFilter}
-              // onChange={e => setUserStatusFilter(e.target.value)}
+              value={statusFilter} // Usamos `statusFilter` como el valor actual
+              onChange={handleStatusChange}
               label='Filtrar por Estado'
             >
               <MenuItem value='Activos'>Activos</MenuItem>

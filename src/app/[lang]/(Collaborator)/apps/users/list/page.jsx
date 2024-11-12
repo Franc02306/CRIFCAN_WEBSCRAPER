@@ -13,14 +13,17 @@ const UserListApp = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(null)
 
-  const getListUsers = async () => {
+  //FILTRO PARA LOS ESTADOS DE USUARIO
+  const [statusFilter, setStatusFilter] = useState('Activos')
+
+  const getListUsers = async filter => {
     try {
       setIsLoading(true)
       const response = await listUser()
 
-      const activeUsers = response.data.filter(user => user.is_active === true)
+      const filteredUsers = response.data.filter(user => (filter === 'Activos' ? user.is_active : !user.is_active))
 
-      setUsers(activeUsers)
+      setUsers(filteredUsers)
     } catch (error) {
       console.error('Error en la solicitud:', error)
       setError('Algo salió mal, intenta de nuevo más tarde.')
@@ -29,12 +32,17 @@ const UserListApp = () => {
     }
   }
 
+  const handleStatusFilterChange = newFilter => {
+    setStatusFilter(newFilter) // Actualiza el estado `statusFilter`
+    getListUsers(newFilter) // Llama a `getListUsers` con el nuevo filtro
+  }
+
   const handleUserAdded = async () => {
-    await getListUsers()
+    await getListUsers(statusFilter)
   }
 
   useEffect(() => {
-    getListUsers()
+    getListUsers(statusFilter)
   }, [])
 
   if (isLoading) {
@@ -70,7 +78,14 @@ const UserListApp = () => {
     )
   }
 
-  return <UsersListIndex users={users} onUserAdded={handleUserAdded} />
+  return (
+    <UsersListIndex
+      users={users}
+      onUserAdded={handleUserAdded}
+      getListUsers={handleStatusFilterChange}
+      statusFilter={statusFilter}
+    />
+  )
 }
 
 export default UserListApp
