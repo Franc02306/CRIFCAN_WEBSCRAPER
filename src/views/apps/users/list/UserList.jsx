@@ -150,7 +150,7 @@ const UserList = ({ users, onUserAdded, getListUsers, statusFilter }) => {
 
     if (result.isConfirmed) {
       try {
-        await updateUserById(id)
+        await updateUserById(id, { is_active: true })
 
         Swal.fire({
           icon: 'success',
@@ -160,7 +160,7 @@ const UserList = ({ users, onUserAdded, getListUsers, statusFilter }) => {
           timer: 4000
         })
 
-        onUserAdded()
+        onUserAdded();
       } catch (error) {
         console.error('Error eliminando usuario:', error)
         Swal.fire({
