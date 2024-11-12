@@ -41,7 +41,7 @@ const ParamsModal = ({ open, setIsModalOpen, onClose, web, mode }) => {
   const [openInfoSnackbar, setOpenInfoSnackbar] = useState(false)
   const [error, setError] = useState(null)
   const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false)
-	const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const isEditMode = mode === 'edit'
 
@@ -53,6 +53,80 @@ const ParamsModal = ({ open, setIsModalOpen, onClose, web, mode }) => {
 
   const resetForm = () => {
     setFormData(initialData)
+  }
+
+  const validateAndShowWarnings = () => {
+    if (!formData.name) {
+      setWarnMessage('El campo Nombre es obligatorio.')
+      setOpenWarnSnackbar(true)
+
+      return false
+    }
+
+    if (!formData.urlWeb) {
+      setWarnMessage('El campo Url es obligatorio.')
+      setOpenWarnSnackbar(true)
+
+      return false
+    }
+
+    if (!formData.frequency) {
+      setWarnMessage('El campo frecuencia es obligatorio')
+    }
+
+    return true
+  }
+
+  const handleCloseInfoSnackbar = () => {
+    setOpenInfoSnackbar(false)
+  }
+
+  const handleCloseWarningSnackbar = () => {
+    setOpenWarnSnackbar(false)
+  }
+
+  const handleCloseErrorSnackbar = () => {
+    setOpenErrorSnackbar(false)
+  }
+
+  const handleSubmit = async () => {
+    if (isSubmitting) return
+
+    setIsSubmitting(true)
+
+    if (!validateAndShowWarnings()) {
+      setIsSubmitting(false)
+
+      return
+    }
+
+    const payload = {
+      ...formData
+    }
+
+    try {
+      if (isEditMode) {
+        Swal.fire({
+          icon: 'success',
+          html: `<span style="font-family: Arial, sans-serif; font-size: 26px; color: ${titleColor};">Fuente Web actualizado correctamente</span>`,
+          confirmButtonColor: confirmButtonColor,
+          confirmButtonText: 'Aceptar',
+          background: backgroundColor,
+          timer: 4000
+        })
+      } else {
+        Swal.fire({
+          icon: 'success',
+          html: `<span style="font-family: Arial, sans-serif; font-size: 26px; color: ${titleColor};">Fuente Web creado correctamente</span>`,
+          confirmButtonColor: confirmButtonColor,
+          confirmButtonText: 'Aceptar',
+          background: backgroundColor,
+          timer: 4000
+        })
+      }
+    } catch (error) {
+      console.error('Error en la solicitud: ', error)
+    }
   }
 
   useEffect(() => {
@@ -134,7 +208,7 @@ const ParamsModal = ({ open, setIsModalOpen, onClose, web, mode }) => {
           </Box>
         </DialogContent>
 
-				<DialogActions sx={{ marginTop: 5 }}>
+        <DialogActions sx={{ marginTop: 5 }}>
           <Button onClick={handleCloseModal} color='error' variant='outlined'>
             Cancelar
           </Button>

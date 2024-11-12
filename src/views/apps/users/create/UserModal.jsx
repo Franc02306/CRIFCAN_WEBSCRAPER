@@ -130,10 +130,10 @@ const UserModal = ({ open, setIsModalOpen, onClose, onUserAdded, user, mode }) =
   }
 
   const validateUsername = value => {
-    const maxLength = 60
+    const maxLength = 100
 
     if (value.length > maxLength) {
-      setInfoMessage('Longitud máxima alcanzada: 60 caracteres en el campo Nombres.')
+      setInfoMessage('Longitud máxima alcanzada: 100 caracteres en el campo Nombres.')
       setOpenInfoSnackbar(true)
 
       return false
@@ -143,10 +143,10 @@ const UserModal = ({ open, setIsModalOpen, onClose, onUserAdded, user, mode }) =
   }
 
   const validateLastName = value => {
-    const maxLength = 60
+    const maxLength = 100
 
     if (value.length > maxLength) {
-      setInfoMessage('Longitud máxima alcanzada: 60 caracteres en el campo Apellidos.')
+      setInfoMessage('Longitud máxima alcanzada: 100 caracteres en el campo Apellidos.')
       setOpenInfoSnackbar(true)
 
       return false
@@ -156,10 +156,10 @@ const UserModal = ({ open, setIsModalOpen, onClose, onUserAdded, user, mode }) =
   }
 
   const validateEmail = value => {
-    const maxLength = 60
+    const maxLength = 200
 
     if (value.length > maxLength) {
-      setInfoMessage('Longitud máxima alcanzada: 60 caracteres en el campo Correo Electrónico.')
+      setInfoMessage('Longitud máxima alcanzada: 200 caracteres en el campo Correo Electrónico.')
       setOpenInfoSnackbar(true)
 
       return false
@@ -307,7 +307,7 @@ const UserModal = ({ open, setIsModalOpen, onClose, onUserAdded, user, mode }) =
                 name='username'
                 value={formData.username}
                 onChange={handleUsernameChange}
-                inputProps={{ maxLength: 61 }}
+                inputProps={{ maxLength: 101 }}
                 fullWidth
               />
             </Grid>
@@ -321,7 +321,7 @@ const UserModal = ({ open, setIsModalOpen, onClose, onUserAdded, user, mode }) =
                 name='last_name'
                 value={formData.last_name}
                 onChange={handleLastNameChange}
-                inputProps={{ maxLength: 61 }}
+                inputProps={{ maxLength: 101 }}
                 fullWidth
               />
             </Grid>
@@ -335,7 +335,7 @@ const UserModal = ({ open, setIsModalOpen, onClose, onUserAdded, user, mode }) =
                 value={formData.email}
                 onChange={handleEmailChange}
                 type='email'
-                inputProps={{ maxLength: 61 }}
+                inputProps={{ maxLength: 201 }}
                 fullWidth
               />
             </Grid>
