@@ -6,7 +6,7 @@ import { CircularProgress, Box, Typography } from '@mui/material'
 
 import ParamsListIndex from '../../../../../../views/apps/scraping/params-list/index'
 
-import { listUrls } from '../../../../../../service/scraperService'
+import { listUrls, getUrlByParams } from '../../../../../../service/scraperService'
 
 const ParamsListApp = () => {
   const [webSites, setWebSites] = useState([])
@@ -19,29 +19,46 @@ const ParamsListApp = () => {
 
       const response = await listUrls()
 
-      // const filteredWebsites = Object.values(
-      //   response.data.reduce((acc, doc) => {
-      //     const currentDocDate = new Date(doc.Fecha_scrapper)
-      //     const existingDoc = acc[doc.Url]
+      const updatedWebSites = await filterRecentUrls(response.data)
 
-      //     // Verifica si el documento actual es más reciente o si no hay otro con la misma URL
-      //     if (!existingDoc || currentDocDate > new Date(existingDoc.Fecha_scrapper)) {
-      //       acc[doc.Url] = doc
-      //     }
-
-      //     return acc
-      //   }, {})
-      // )
-
-      console.log(response.data)
-
-      setWebSites(response.data)
+      setWebSites(updatedWebSites)
     } catch (error) {
       console.error('Error al obtener los sitios de scraping: ', error)
       setError('Algo salió mal, intenta de nuevo más tarde')
     } finally {
       setIsLoading(false)
     }
+  }
+
+  const filterRecentUrls = async urls => {
+    // Mapeo de URLs de listUrls y comparación con getUrlByParams para mantener la más reciente
+    const updatedUrls = await Promise.all(
+      urls.map(async urlItem => {
+        try {
+          // Llamo a getUrlByParams pasando el valor del parámetro 'url' directamente
+          const { data } = await getUrlByParams(urlItem.url)
+
+          if (data.scraped_data && data.scraped_data.length > 0) {
+            // Ordeno las entradas de scraped_data por fecha y mantengo la más reciente
+            const sortedData = data.scraped_data.sort((a, b) => new Date(b.Fecha_scrapper) - new Date(a.Fecha_scrapper))
+            const recentData = sortedData[0]
+
+            // Devuelvo el objeto actualizado con la fecha más reciente
+            return {
+              ...urlItem,
+              url: recentData.Url,
+              updated_at: recentData.Fecha_scrapper
+            }
+          }
+        } catch (error) {
+          console.error(`Error al obtener datos de scraping para URL ${urlItem.url}:`, error)
+          // Devuelvo el registro original si hay un error con getUrlByParams
+        }
+        // Si no hay datos en getUrlByParams o si ocurrió un error, devuelvo el registro original
+        return urlItem
+      })
+    )
+    return updatedUrls
   }
 
   useEffect(() => {
