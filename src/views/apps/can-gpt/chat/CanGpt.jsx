@@ -11,7 +11,6 @@ const CanGpt = () => {
   return (
     <div className='App'>
       <div>
-        <h2 style={{ color: 'green' }}>CAN GPT</h2>
         <iframe
           style={{
             position: 'absolute',

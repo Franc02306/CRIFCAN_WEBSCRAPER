@@ -294,7 +294,7 @@ const UserModal = ({ open, setIsModalOpen, onClose, onUserAdded, user, mode }) =
               width: '100%',
               display: 'flex',
               justifyContent: 'center', // Centrado vertical
-              height: '65vh', // ESTO AYUDA A POSICIONAR VERTICALMENTE CENTRALMENTE
+              height: '65vh' // ESTO AYUDA A POSICIONAR VERTICALMENTE CENTRALMENTE
             }}
           >
             <Grid item xs={12} sx={{ mt: 3 }}>
@@ -376,7 +376,7 @@ const UserModal = ({ open, setIsModalOpen, onClose, onUserAdded, user, mode }) =
 
         <DialogActions sx={{ marginTop: 5 }}>
           <Button onClick={handleCloseModal} color='error' variant='outlined'>
-            Cancelar
+            Cerrar
           </Button>
           <Button onClick={handleSubmit} disabled={isSubmitting} color='primary' variant='contained'>
             {isSubmitting ? (isEditMode ? 'Actualizando...' : 'Creando...') : isEditMode ? 'Actualizar' : 'Crear'}
@@ -385,7 +385,12 @@ const UserModal = ({ open, setIsModalOpen, onClose, onUserAdded, user, mode }) =
       </Dialog>
 
       {/* Snackbar para mostrar campos obligatorios */}
-      <Snackbar open={openWarnSnackbar} autoHideDuration={3000} onClose={handleCloseWarningSnackbar}>
+      <Snackbar
+        open={openWarnSnackbar}
+        autoHideDuration={3000}
+        onClose={handleCloseWarningSnackbar}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
         <Alert
           onClose={handleCloseWarningSnackbar}
           severity='warning'
@@ -402,7 +407,12 @@ const UserModal = ({ open, setIsModalOpen, onClose, onUserAdded, user, mode }) =
       </Snackbar>
 
       {/* Snackbar para mostrar errores */}
-      <Snackbar open={openErrorSnackbar} autoHideDuration={3000} onClose={handleCloseErrorSnackbar}>
+      <Snackbar
+        open={openErrorSnackbar}
+        autoHideDuration={3000}
+        onClose={handleCloseErrorSnackbar}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
         <Alert
           onClose={handleCloseErrorSnackbar}
           severity='error'
@@ -419,7 +429,12 @@ const UserModal = ({ open, setIsModalOpen, onClose, onUserAdded, user, mode }) =
       </Snackbar>
 
       {/* Snackbar para mostrar la información de límite de caracteres */}
-      <Snackbar open={openInfoSnackbar} autoHideDuration={4000} onClose={handleCloseInfoSnackbar}>
+      <Snackbar
+        open={openInfoSnackbar}
+        autoHideDuration={4000}
+        onClose={handleCloseInfoSnackbar}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
         <Alert
           onClose={handleCloseInfoSnackbar}
           severity='info'

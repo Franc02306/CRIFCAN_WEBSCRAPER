@@ -88,6 +88,7 @@ const ParamsModal = ({ open, setIsModalOpen, onClose, web, mode, fetchWebSites }
 
     if (!formData.time_choices) {
       setWarnMessage('El campo Frecuencia de Scrapeo es obligatorio.')
+      setOpenWarnSnackbar(true)
     }
 
     return true
@@ -236,7 +237,7 @@ const ParamsModal = ({ open, setIsModalOpen, onClose, web, mode, fetchWebSites }
 
         <DialogActions sx={{ marginTop: 5 }}>
           <Button onClick={handleCloseModal} color='error' variant='outlined'>
-            Cancelar
+            Cerrar
           </Button>
           <Button onClick={handleSubmit} disabled={isSubmitting} color='primary' variant='contained'>
             {isSubmitting ? (isEditMode ? 'Actualizando...' : 'Creando...') : isEditMode ? 'Actualizar' : 'Crear'}
@@ -245,7 +246,12 @@ const ParamsModal = ({ open, setIsModalOpen, onClose, web, mode, fetchWebSites }
       </Dialog>
 
       {/* Snackbar para mostrar campos obligatorios */}
-      <Snackbar open={openWarnSnackbar} autoHideDuration={3000} onClose={handleCloseWarningSnackbar}>
+      <Snackbar
+        open={openWarnSnackbar}
+        autoHideDuration={3000}
+        onClose={handleCloseWarningSnackbar}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
         <Alert
           onClose={handleCloseWarningSnackbar}
           severity='warning'
@@ -262,7 +268,12 @@ const ParamsModal = ({ open, setIsModalOpen, onClose, web, mode, fetchWebSites }
       </Snackbar>
 
       {/* Snackbar para mostrar errores */}
-      <Snackbar open={openErrorSnackbar} autoHideDuration={3000} onClose={handleCloseErrorSnackbar}>
+      <Snackbar
+        open={openErrorSnackbar}
+        autoHideDuration={3000}
+        onClose={handleCloseErrorSnackbar}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
         <Alert
           onClose={handleCloseErrorSnackbar}
           severity='error'

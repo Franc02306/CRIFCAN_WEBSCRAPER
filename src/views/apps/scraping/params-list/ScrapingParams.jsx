@@ -286,16 +286,18 @@ const ScrapingParams = ({ webSites, fetchWebSites }) => {
               {sortedWebSites.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(site => (
                 <TableRow key={site.id} sx={{ '&:hover': { backgroundColor: theme.palette.action.hover } }}>
                   <TableCell align='center'>{site.type_file_display}</TableCell>
-                  <TableCell
-                    align='center'
-                    onClick={() => handleOpenUrlModal(site.url)} // Abre el modal al hacer clic
-                    sx={{
-                      cursor: 'pointer',
-                      fontWeight: 'bold',
-                      '&:hover': { color: 'secondary.main' }
-                    }}
-                  >
-                    {site.url.length > 100 ? `${site.url.slice(0, 100)}...` : site.url}
+                  <TableCell align='center'>
+                    <span
+                      onClick={() => handleOpenUrlModal(site.url)}
+                      style={{
+                        cursor: 'pointer',
+                        fontWeight: 'bold',
+                        textDecoration: 'underline',
+                        '&:hover': { color: 'secondary.main' }
+                      }}
+                    >
+                      {site.url.length > 100 ? `${site.url.slice(0, 100)}...` : site.url}
+                    </span>
                   </TableCell>
                   <TableCell align='center'>
                     <Select

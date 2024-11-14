@@ -112,7 +112,7 @@ const ChangePasswordModal = ({ open, handleClose, userId }) => {
 			</DialogContent>
 			<DialogActions>
 				<Button onClick={handleClose} color='secondary'>
-					Cancelar
+					Cerrar
 				</Button>
 				<Button onClick={handleSubmitPassword} variant='contained' color='primary'>
 					Confirmar
