@@ -45,7 +45,7 @@ import { scrapUrl } from '../../../../service/scraperService'
 
 const ScrapingParams = ({ webSites, fetchWebSites }) => {
   const [page, setPage] = useState(0)
-  const [rowsPerPage, setRowsPerPage] = useState(5)
+  const [rowsPerPage, setRowsPerPage] = useState(10)
   const [order, setOrder] = useState('asc')
   const [orderBy, setOrderBy] = useState('type_file_display')
   const [selectedWeb, setSelectedWeb] = useState(null)
@@ -188,7 +188,8 @@ const ScrapingParams = ({ webSites, fetchWebSites }) => {
           sx={{
             marginTop: 2,
             borderRadius: 1.5, // Curva los bordes del contenedor
-            overflow: 'hidden' // Evita que los elementos se desborden
+            overflow: 'hidden', // Evita que los elementos se desborden
+            overflowX: 'auto'
           }}
         >
           <Table
@@ -259,16 +260,18 @@ const ScrapingParams = ({ webSites, fetchWebSites }) => {
         </TableContainer>
       </Box>
 
-      <TablePagination
-        rowsPerPageOptions={[5, 10, 25]}
-        component='div'
-        count={webSites.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-        labelRowsPerPage='Sitios por página'
-      />
+      <Box sx={{ display: 'flex', justifyContent: 'flex-start', paddingLeft: 2 }}>
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component='div'
+          count={webSites.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+          labelRowsPerPage='Sitios por página'
+        />
+      </Box>
 
       <ParamsModal
         open={isModalOpen}

@@ -5,8 +5,12 @@ export const listUrls = () => {
   return API.get('/api/v1/urls/')
 };
 
-export const getUrlByParam = () => {
-  return API.get('')
+export const getUrlByParams = (url) => {
+  return API.get(`/api/v1/scraped-get-url/`, {
+    params: {
+      url: url
+    }
+  });
 };
 
 
