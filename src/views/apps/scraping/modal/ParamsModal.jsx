@@ -27,23 +27,26 @@ import { useTheme } from '@emotion/react'
 
 import DialogCloseButton from '@components/dialogs/DialogCloseButton'
 
+// IMPORTACION DE SERVICIOS API
+import { addUrl, updateUrl } from '../../../../service/scraperService'
+
 const initialData = {
-  name: '',
-  urlWeb: '',
-  frequency: ''
+  url: '',
+  type_file: '',
+  time_choices: ''
 }
 
-const ParamsModal = ({ open, setIsModalOpen, onClose, web, mode }) => {
+const ParamsModal = ({ open, setIsModalOpen, onClose, web, mode, fetchWebSites }) => {
   const [formData, setFormData] = useState(initialData)
   const [warnMessage, setWarnMessage] = useState('')
   const [openWarnSnackbar, setOpenWarnSnackbar] = useState(false)
-  const [infoMessage, setInfoMessage] = useState('')
-  const [openInfoSnackbar, setOpenInfoSnackbar] = useState(false)
   const [error, setError] = useState(null)
   const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const isEditMode = mode === 'edit'
+
+  console.log('web PROP: ', web)
 
   // TEMAS
   const theme = useTheme()
@@ -55,30 +58,39 @@ const ParamsModal = ({ open, setIsModalOpen, onClose, web, mode }) => {
     setFormData(initialData)
   }
 
+  useEffect(() => {
+    if (open && isEditMode && web) {
+      setFormData(web) // Carga los datos del usuario solo si el modal está abierto y es edición
+    } else if (open && !isEditMode) {
+      resetForm() // Limpia el formulario en modo creación
+    }
+  }, [open, web, isEditMode])
+
+  const handleCloseModal = () => {
+    resetForm()
+    setIsModalOpen(false)
+  }
+
   const validateAndShowWarnings = () => {
-    if (!formData.name) {
-      setWarnMessage('El campo Nombre es obligatorio.')
+    if (!formData.url) {
+      setWarnMessage('El campo Enlace Web es obligatorio.')
       setOpenWarnSnackbar(true)
 
       return false
     }
 
-    if (!formData.urlWeb) {
-      setWarnMessage('El campo Url es obligatorio.')
+    if (!formData.type_file) {
+      setWarnMessage('El campo Tipo de Documento es obligatorio.')
       setOpenWarnSnackbar(true)
 
       return false
     }
 
-    if (!formData.frequency) {
-      setWarnMessage('El campo frecuencia es obligatorio')
+    if (!formData.time_choices) {
+      setWarnMessage('El campo Frecuencia de Scrapeo es obligatorio.')
     }
 
     return true
-  }
-
-  const handleCloseInfoSnackbar = () => {
-    setOpenInfoSnackbar(false)
   }
 
   const handleCloseWarningSnackbar = () => {
@@ -106,40 +118,36 @@ const ParamsModal = ({ open, setIsModalOpen, onClose, web, mode }) => {
 
     try {
       if (isEditMode) {
+        await updateUrl(web.id, payload)
+
         Swal.fire({
           icon: 'success',
-          html: `<span style="font-family: Arial, sans-serif; font-size: 26px; color: ${titleColor};">Fuente Web actualizado correctamente</span>`,
+          html: `<span style="font-family: Arial, sans-serif; font-size: 26px; color: ${titleColor};">Enlace Web actualizado correctamente</span>`,
           confirmButtonColor: confirmButtonColor,
           confirmButtonText: 'Aceptar',
           background: backgroundColor,
           timer: 4000
         })
       } else {
+        await addUrl(payload)
+
         Swal.fire({
           icon: 'success',
-          html: `<span style="font-family: Arial, sans-serif; font-size: 26px; color: ${titleColor};">Fuente Web creado correctamente</span>`,
+          html: `<span style="font-family: Arial, sans-serif; font-size: 26px; color: ${titleColor};">Enlace Web creado correctamente</span>`,
           confirmButtonColor: confirmButtonColor,
           confirmButtonText: 'Aceptar',
           background: backgroundColor,
           timer: 4000
         })
       }
+
+      fetchWebSites()
+      handleCloseModal()
     } catch (error) {
       console.error('Error en la solicitud: ', error)
+    } finally {
+      setIsSubmitting(false)
     }
-  }
-
-  useEffect(() => {
-    if (open && isEditMode && web) {
-      setFormData(web) // Carga los datos del usuario solo si el modal está abierto y es edición
-    } else if (open && !isEditMode) {
-      resetForm() // Limpia el formulario en modo creación
-    }
-  }, [open, web, isEditMode])
-
-  const handleCloseModal = () => {
-    resetForm()
-    setIsModalOpen(false)
   }
 
   return (
@@ -185,36 +193,37 @@ const ParamsModal = ({ open, setIsModalOpen, onClose, web, mode }) => {
           >
             <Grid item xs={12} sx={{ mt: 10 }}>
               <TextField
-                autoFocus
                 autoComplete='off'
                 margin='dense'
                 variant='outlined'
-                label='Nombre'
+                label='Enlace Web'
                 type='text'
-                name='name'
-                value={formData.name}
-                fullWidth
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                autoComplete='off'
-                margin='dense'
-                variant='outlined'
-                label='Enlace'
-                type='text'
-                name='urlWeb'
-                value={formData.urlWeb}
+                name='url'
+                value={formData.url}
+                onChange={e => setFormData({ ...formData, url: e.target.value })}
                 fullWidth
               />
             </Grid>
             <Grid item xs={12} sx={{ marginTop: '5px', marginBottom: '5px' }}>
               <FormControl fullWidth>
-                <InputLabel>Frecuencia</InputLabel>
+                <InputLabel>Tipo de Documento</InputLabel>
                 <Select
-                  value={formData.frequency}
-                  onChange={e => setFormData({ ...formData, frequency: e.target.value })}
-                  label='Frecuencia'
+                  value={formData.type_file}
+                  onChange={e => setFormData({ ...formData, type_file: e.target.value })}
+                  label='Tipo de Documento'
+                >
+                  <MenuItem value={1}>Web</MenuItem>
+                  <MenuItem value={2}>PDF</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sx={{ marginTop: '5px', marginBottom: '5px' }}>
+              <FormControl fullWidth>
+                <InputLabel>Frecuencia de Scrapeo</InputLabel>
+                <Select
+                  value={formData.time_choices}
+                  onChange={e => setFormData({ ...formData, time_choices: e.target.value })}
+                  label='Frecuencia de Scrapeo'
                 >
                   <MenuItem value={1}>Mensual</MenuItem>
                   <MenuItem value={2}>Trimestral</MenuItem>
@@ -229,11 +238,45 @@ const ParamsModal = ({ open, setIsModalOpen, onClose, web, mode }) => {
           <Button onClick={handleCloseModal} color='error' variant='outlined'>
             Cancelar
           </Button>
-          <Button disabled={isSubmitting} color='primary' variant='contained'>
+          <Button onClick={handleSubmit} disabled={isSubmitting} color='primary' variant='contained'>
             {isSubmitting ? (isEditMode ? 'Actualizando...' : 'Creando...') : isEditMode ? 'Actualizar' : 'Crear'}
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* Snackbar para mostrar campos obligatorios */}
+      <Snackbar open={openWarnSnackbar} autoHideDuration={3000} onClose={handleCloseWarningSnackbar}>
+        <Alert
+          onClose={handleCloseWarningSnackbar}
+          severity='warning'
+          sx={{
+            width: '100%',
+            backgroundColor: 'rgba(255, 165, 100, 0.7)',
+            color: '#000',
+            fontWeight: '600',
+            boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.9)'
+          }}
+        >
+          {warnMessage}
+        </Alert>
+      </Snackbar>
+
+      {/* Snackbar para mostrar errores */}
+      <Snackbar open={openErrorSnackbar} autoHideDuration={3000} onClose={handleCloseErrorSnackbar}>
+        <Alert
+          onClose={handleCloseErrorSnackbar}
+          severity='error'
+          sx={{
+            width: '100%',
+            backgroundColor: 'rgba(255, 100, 100, 0.8)',
+            color: '#000',
+            fontWeight: '600',
+            boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.9)'
+          }}
+        >
+          {error}
+        </Alert>
+      </Snackbar>
     </>
   )
 }

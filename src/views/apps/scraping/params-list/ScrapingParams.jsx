@@ -303,6 +303,7 @@ const ScrapingParams = ({ webSites, fetchWebSites }) => {
         onClose={handleCloseModal}
         web={selectedWeb}
         mode={modalMode}
+        fetchWebSites={fetchWebSites}
       />
       <ViewUrlModal
         url={selectedUrl}

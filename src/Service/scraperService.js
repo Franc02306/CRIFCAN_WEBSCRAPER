@@ -20,13 +20,13 @@ export const scrapUrl = (url) => {
 };
 
 export const addUrl = (body) => {
-  return API.post('/api/v1/urls/')
+  return API.post('/api/v1/urls/', body)
 };
 
 
 // SERVICIO PUT
 export const updateUrl = (id, body) => {
-  return API.put(`/api/v1/urls/${id}`, body)
+  return API.put(`/api/v1/urls/${id}/`, body)
 };
 
 

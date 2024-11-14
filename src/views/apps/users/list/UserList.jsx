@@ -49,7 +49,7 @@ import { deleteUser, updateUserById } from '../../../../service/userService'
 
 const UserList = ({ users, onUserAdded, getListUsers, statusFilter }) => {
   const [page, setPage] = useState(0)
-  const [rowsPerPage, setRowsPerPage] = useState(5)
+  const [rowsPerPage, setRowsPerPage] = useState(10)
   const [order, setOrder] = useState('asc')
   const [orderBy, setOrderBy] = useState('username')
   const [selectedUser, setSelectedUser] = useState(null)
@@ -160,7 +160,7 @@ const UserList = ({ users, onUserAdded, getListUsers, statusFilter }) => {
           timer: 4000
         })
 
-        onUserAdded();
+        onUserAdded()
       } catch (error) {
         console.error('Error eliminando usuario:', error)
         Swal.fire({
@@ -383,16 +383,18 @@ const UserList = ({ users, onUserAdded, getListUsers, statusFilter }) => {
         </TableContainer>
       </Box>
 
-      <TablePagination
-        rowsPerPageOptions={[5, 10, 25]}
-        component='div'
-        count={filteredUsers.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-        labelRowsPerPage='Usuarios por página'
-      />
+      <Box sx={{ display: 'flex', justifyContent: 'flex-start', paddingLeft: 2 }}>
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component='div'
+          count={filteredUsers.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+          labelRowsPerPage='Usuarios por página'
+        />
+      </Box>
 
       <UserModal
         open={isModalOpen}
