@@ -15,8 +15,8 @@ export const getUrlByParams = (url) => {
 
 
 // SERVICIO POST
-export const scrapUrl = (url) => {
-  return API.post('/api/v1/scrape-url/', url)
+export const scrapUrl = (body) => {
+  return API.post('/api/v1/scrape-url/', body)
 };
 
 export const addUrl = (body) => {

@@ -132,7 +132,7 @@ const ScrapingParams = ({ webSites, fetchWebSites }) => {
       })
 
       try {
-        await scrapUrl({ url: site.Url })
+        await scrapUrl({ url: site.url, tipo: site.type_file })
 
         Swal.fire({
           icon: 'success',
