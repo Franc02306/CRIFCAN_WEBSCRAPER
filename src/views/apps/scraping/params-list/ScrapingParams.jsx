@@ -43,7 +43,14 @@ import ParamsModal from '../modal/ParamsModal'
 import ViewUrlModal from '../modal/ViewUrlModal'
 
 // IMPORTACIÓN DE SERVICIOS
-import { scrapUrl } from '../../../../service/scraperService'
+import { scrapUrl, updateUrl } from '../../../../service/scraperService'
+
+// OPCIONES DE FRECUENCIA DE SCPAPEO
+const frequencyOptions = [
+  { id: 1, label: 'Mensual' },
+  { id: 2, label: 'Trimestral' },
+  { id: 3, label: 'Semestral' }
+]
 
 const ScrapingParams = ({ webSites, fetchWebSites }) => {
   const [page, setPage] = useState(0)
@@ -57,6 +64,12 @@ const ScrapingParams = ({ webSites, fetchWebSites }) => {
   const [selectedUrl, setSelectedUrl] = useState('')
 
   const theme = useTheme()
+
+  // VARIABLES PARA EL TEMA SWAL
+  const titleColor = theme.palette.mode === 'dark' ? '#FFFFFF' : '#000000'
+  const backgroundColor = theme.palette.background.paper
+  const confirmButtonColor = theme.palette.primary.main
+  const cancelButtonColor = theme.palette.error.main
 
   const handleRequestSort = property => {
     const isAsc = orderBy === property && order === 'asc'
@@ -87,7 +100,7 @@ const ScrapingParams = ({ webSites, fetchWebSites }) => {
     setIsModalOpen(true)
   }
 
-  const handleOpenUrlModal = (url) => {
+  const handleOpenUrlModal = url => {
     setSelectedUrl(url)
     setIsUrlModalOpen(true)
   }
@@ -103,12 +116,38 @@ const ScrapingParams = ({ webSites, fetchWebSites }) => {
     setIsUrlModalOpen(false)
   }
 
-  const handleScrapSite = async site => {
-    const titleColor = theme.palette.mode === 'dark' ? '#FFFFFF' : '#000000'
-    const backgroundColor = theme.palette.background.paper
-    const confirmButtonColor = theme.palette.primary.main
-    const cancelButtonColor = theme.palette.error.main
+  const handleFrequencyChange = async (event, site) => {
+    const newFrequency = event.target.value
 
+    const payload = {
+      url: site.url,
+      type_file: site.type_file,
+      time_choices: newFrequency
+    }
+
+    try {
+      await updateUrl(site.id, payload)
+      Swal.fire({
+        html: `<span style="font-family: Arial, sans-serif; font-size: 28px; color: ${titleColor};">Frecuencia de Scrapeo actualizada con éxito</span>`,
+        icon: 'success',
+        confirmButtonText: 'Aceptar',
+        confirmButtonColor: theme.palette.primary.main,
+        background: theme.palette.background.paper,
+        timer: 4000
+      })
+      fetchWebSites()
+    } catch (error) {
+      console.error('Error actualizando la frecuencia:', error)
+      Swal.fire({
+        icon: 'error',
+        html: `<span style="font-family: Arial, sans-serif; font-size: 26px; color: ${titleColor};">Error al actualizar Frecuencia de Scrapeo</span>`,
+        confirmButtonColor: theme.palette.error.main,
+        background: theme.palette.background.paper
+      })
+    }
+  }
+
+  const handleScrapSite = async site => {
     const result = await Swal.fire({
       html: `<span style="font-family: Arial, sans-serif; font-size: 28px; color: ${titleColor};">¿Quieres ejecutar el Scrapeo para esta URL?</span>`,
       icon: 'warning',
@@ -247,18 +286,31 @@ const ScrapingParams = ({ webSites, fetchWebSites }) => {
               {sortedWebSites.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(site => (
                 <TableRow key={site.id} sx={{ '&:hover': { backgroundColor: theme.palette.action.hover } }}>
                   <TableCell align='center'>{site.type_file_display}</TableCell>
-                  <TableCell 
+                  <TableCell
                     align='center'
                     onClick={() => handleOpenUrlModal(site.url)} // Abre el modal al hacer clic
-                    sx={{ 
-                      cursor: 'pointer', 
+                    sx={{
+                      cursor: 'pointer',
                       fontWeight: 'bold',
                       '&:hover': { color: 'secondary.main' }
                     }}
                   >
                     {site.url.length > 100 ? `${site.url.slice(0, 100)}...` : site.url}
                   </TableCell>
-                  <TableCell align='center'>{site.time_choices_display}</TableCell>
+                  <TableCell align='center'>
+                    <Select
+                      value={site.time_choices} // El valor inicial de la frecuencia
+                      onChange={e => handleFrequencyChange(e, site)} // Maneja el cambio de frecuencia
+                      fullWidth
+                      size='small'
+                    >
+                      {frequencyOptions.map(option => (
+                        <MenuItem key={option.id} value={option.id}>
+                          {option.label}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </TableCell>
                   <TableCell align='center'>{new Date(site.updated_at).toLocaleDateString()}</TableCell>
                   <TableCell align='center'>
                     <Tooltip title='Editar'>
@@ -305,11 +357,7 @@ const ScrapingParams = ({ webSites, fetchWebSites }) => {
         mode={modalMode}
         fetchWebSites={fetchWebSites}
       />
-      <ViewUrlModal
-        url={selectedUrl}
-        open={isUrlModalOpen}
-        onClose={handleCloseUrlModal}
-      />
+      <ViewUrlModal url={selectedUrl} open={isUrlModalOpen} onClose={handleCloseUrlModal} />
     </Paper>
   )
 }
