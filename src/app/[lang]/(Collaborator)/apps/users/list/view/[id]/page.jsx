@@ -10,7 +10,7 @@ import Grid from '@mui/material/Grid'
 
 import DetailView from '../../../../../../../../views/apps/users/view/detail-view/index'
 
-import { getUserById } from '../../../../../../../../Service/userService'
+import { getUserById } from '../../../../../../../../service/userService'
 
 const VerPage = ({ params }) => {
   // Vars

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 
 import { CircularProgress, Box, Typography } from '@mui/material'
 
-import { listUser } from '../../../../../../Service/userService'
+import { listUser } from '../../../../../../service/userService'
 
 import UsersListIndex from '../../../../../../views/apps/users/list/index'
 

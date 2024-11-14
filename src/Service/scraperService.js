@@ -1,12 +1,28 @@
 import API from './axios.config'
 
-// SERVICIO POST SCRAPER
-export const scrapWeb = url => {
-  return API.post('/api/v1/scrape-url/', url)
-}
+// SERVICIO GET
+export const listUrls = () => {
+  return API.get('/api/v1/urls/')
+};
 
-export const listScrapingUrl = () => {
-  return API.get('/api/v1/scrape-url/')
+export const getUrlByParam = () => {
+  return API.get('')
+};
+
+
+// SERVICIO POST
+export const scrapUrl = (url) => {
+  return API.post('/api/v1/scrape-url/', url)
+};
+
+export const addUrl = (body) => {
+  return API.post('/api/v1/urls/')
+};
+
+
+// SERVICIO PUT
+export const updateUrl = (id, body) => {
+  return API.put(`/api/v1/urls/${id}`, body)
 };
 
 

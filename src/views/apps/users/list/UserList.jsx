@@ -45,7 +45,7 @@ import SearchIcon from '@mui/icons-material/Search'
 import UserModal from '../create/UserModal'
 import { getLocalizedUrl } from '@/utils/i18n'
 
-import { deleteUser, updateUserById } from '../../../../Service/userService'
+import { deleteUser, updateUserById } from '../../../../service/userService'
 
 const UserList = ({ users, onUserAdded, getListUsers, statusFilter }) => {
   const [page, setPage] = useState(0)

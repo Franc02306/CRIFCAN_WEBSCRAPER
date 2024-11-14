@@ -6,7 +6,7 @@ import { CircularProgress, Box, Typography } from '@mui/material'
 
 import ParamsListIndex from '../../../../../../views/apps/scraping/params-list/index'
 
-import { listScrapingUrl } from '../../../../../../Service/scraperService'
+import { listUrls } from '../../../../../../service/scraperService'
 
 const ParamsListApp = () => {
   const [webSites, setWebSites] = useState([])
@@ -17,23 +17,25 @@ const ParamsListApp = () => {
     try {
       setIsLoading(true)
 
-      const response = await listScrapingUrl()
+      const response = await listUrls()
 
-      const filteredWebsites = Object.values(
-        response.data.documents.reduce((acc, doc) => {
-          const currentDocDate = new Date(doc.Fecha_scrapper)
-          const existingDoc = acc[doc.Url]
+      // const filteredWebsites = Object.values(
+      //   response.data.reduce((acc, doc) => {
+      //     const currentDocDate = new Date(doc.Fecha_scrapper)
+      //     const existingDoc = acc[doc.Url]
 
-          // Verifica si el documento actual es más reciente o si no hay otro con la misma URL
-          if (!existingDoc || currentDocDate > new Date(existingDoc.Fecha_scrapper)) {
-            acc[doc.Url] = doc
-          }
+      //     // Verifica si el documento actual es más reciente o si no hay otro con la misma URL
+      //     if (!existingDoc || currentDocDate > new Date(existingDoc.Fecha_scrapper)) {
+      //       acc[doc.Url] = doc
+      //     }
 
-          return acc
-        }, {})
-      )
+      //     return acc
+      //   }, {})
+      // )
 
-      setWebSites(filteredWebsites)
+      console.log(response.data)
+
+      setWebSites(response.data)
     } catch (error) {
       console.error('Error al obtener los sitios de scraping: ', error)
       setError('Algo salió mal, intenta de nuevo más tarde')

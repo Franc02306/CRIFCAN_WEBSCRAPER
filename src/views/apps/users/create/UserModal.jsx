@@ -27,7 +27,7 @@ import { useTheme } from '@emotion/react'
 
 import DialogCloseButton from '@components/dialogs/DialogCloseButton'
 
-import { addUser, updateUserById } from '../../../../Service/userService'
+import { addUser, updateUserById } from '../../../../service/userService'
 
 const initialData = {
   password: '',
@@ -352,7 +352,7 @@ const UserModal = ({ open, setIsModalOpen, onClose, onUserAdded, user, mode }) =
                 </Select>
               </FormControl>
             </Grid>
-            <Grid item xs={12} sx={{ marginTop: '5px' }}>
+            <Grid item xs={12} sx={{ mb: 3 }}>
               <FormControl fullWidth variant='outlined'>
                 <TextField
                   label='Contraseña'

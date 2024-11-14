@@ -41,13 +41,13 @@ import DescriptionIcon from '@mui/icons-material/Description'
 
 import ParamsModal from '../create/ParamsModal'
 
-import { scrapWeb } from '../../../../Service/scraperService'
+import { scrapUrl } from '../../../../service/scraperService'
 
 const ScrapingParams = ({ webSites, fetchWebSites }) => {
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(5)
   const [order, setOrder] = useState('asc')
-  const [orderBy, setOrderBy] = useState('Tipo')
+  const [orderBy, setOrderBy] = useState('type_file_display')
   const [selectedWeb, setSelectedWeb] = useState(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [modalMode, setModalMode] = useState('create')
@@ -118,7 +118,7 @@ const ScrapingParams = ({ webSites, fetchWebSites }) => {
       })
 
       try {
-        const response = await scrapWeb({ url: site.Url })
+        await scrapUrl({ url: site.Url })
 
         Swal.fire({
           icon: 'success',
@@ -206,9 +206,9 @@ const ScrapingParams = ({ webSites, fetchWebSites }) => {
               <TableRow>
                 <TableCell align='center' sx={{ color: theme.palette.primary.contrastText }}>
                   <TableSortLabel
-                    active={orderBy === 'source_web'}
-                    direction={orderBy === 'source_web' ? order : 'asc'}
-                    onClick={() => handleRequestSort('source_web')}
+                    active={orderBy === 'type_file_display'}
+                    direction={orderBy === 'type_file_display' ? order : 'asc'}
+                    onClick={() => handleRequestSort('type_file_display')}
                   >
                     Tipo
                   </TableSortLabel>
@@ -223,9 +223,6 @@ const ScrapingParams = ({ webSites, fetchWebSites }) => {
                   Última Fecha de Scrapeo
                 </TableCell>
                 <TableCell align='center' sx={{ color: theme.palette.primary.contrastText }}>
-                  Etiquetas
-                </TableCell>
-                <TableCell align='center' sx={{ color: theme.palette.primary.contrastText }}>
                   Acciones
                 </TableCell>
               </TableRow>
@@ -233,23 +230,11 @@ const ScrapingParams = ({ webSites, fetchWebSites }) => {
 
             <TableBody>
               {sortedWebSites.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(site => (
-                <TableRow
-                  key={site.Objeto}
-                  sx={{
-                    '&:hover': { backgroundColor: theme.palette.action.hover }
-                  }}
-                >
-                  <TableCell align='center'>{site.Tipo}</TableCell>
-                  <TableCell align='center'>{site.Url}</TableCell>
-                  <TableCell align='center'>
-                    <Select sx={{ width: '80%' }}>
-                      <MenuItem value='Mensual'>Mensual</MenuItem>
-                      <MenuItem value='Trimestral'>Trimestral</MenuItem>
-                      <MenuItem value='Semestral'>Semestral</MenuItem>
-                    </Select>
-                  </TableCell>
-                  <TableCell align='center'>{site.Fecha_scrapper}</TableCell>
-                  <TableCell align='center'>{site.Etiquetas.join(', ')}</TableCell>
+                <TableRow key={site.id} sx={{ '&:hover': { backgroundColor: theme.palette.action.hover } }}>
+                  <TableCell align='center'>{site.type_file_display}</TableCell>
+                  <TableCell align='center'>{site.url}</TableCell>
+                  <TableCell align='center'>{site.time_choices_display}</TableCell>
+                  <TableCell align='center'>{new Date(site.updated_at).toLocaleDateString()}</TableCell>
                   <TableCell align='center'>
                     <Tooltip title='Editar'>
                       <IconButton color='info' onClick={() => handleOpenModal(site)}>

@@ -10,7 +10,7 @@ import Swal from 'sweetalert2'
 import { useTheme } from '@emotion/react'
 
 import CustomAvatar from '@/@core/components/mui/Avatar'
-import { getUserById, deleteUser, updateUserById } from '../../../../../Service/userService'
+import { getUserById, deleteUser, updateUserById } from '../../../../../service/userService'
 
 
 export function UserDetail({ id, user }) {

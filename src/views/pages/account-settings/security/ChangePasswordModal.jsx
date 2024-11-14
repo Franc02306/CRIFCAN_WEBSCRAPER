@@ -20,7 +20,7 @@ import { Alert, IconButton, InputAdornment, Snackbar } from '@mui/material'
 import { Visibility, VisibilityOff } from '@mui/icons-material'
 import Swal from 'sweetalert2'
 
-import { updateUserByIdPatch } from '../../../../Service/userService'
+import { updateUserByIdPatch } from '../../../../service/userService'
 
 const ChangePasswordModal = ({ open, handleClose, userId }) => {
 	const [password, setPassword] = useState('')

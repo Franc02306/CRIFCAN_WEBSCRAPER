@@ -28,7 +28,7 @@ import { useSettings } from '@core/hooks/useSettings'
 
 // Util Imports
 import { getLocalizedUrl } from '@/utils/i18n'
-import { getUserById } from '../../../Service/userService'
+import { getUserById } from '../../../service/userService'
 
 // Styled component for badge content
 const BadgeContentSpan = styled('span')({
