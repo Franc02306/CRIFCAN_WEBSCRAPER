@@ -42,7 +42,7 @@ import RestoreFromTrashIcon from '@mui/icons-material/RestoreFromTrash'
 import AddIcon from '@mui/icons-material/Add'
 import SearchIcon from '@mui/icons-material/Search'
 
-import UserModal from '../create/UserModal'
+import UserModal from '../modal/UserModal'
 import { getLocalizedUrl } from '@/utils/i18n'
 
 import { deleteUser, updateUserById } from '../../../../service/userService'

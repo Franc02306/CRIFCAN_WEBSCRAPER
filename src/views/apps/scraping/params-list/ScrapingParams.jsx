@@ -31,7 +31,6 @@ import {
 
 import Swal from 'sweetalert2'
 import { useTheme } from '@emotion/react'
-import { useSession } from 'next-auth/react'
 
 import AddIcon from '@mui/icons-material/Add'
 import UpdateIcon from '@mui/icons-material/Update'
@@ -39,8 +38,11 @@ import EditIcon from '@mui/icons-material/Edit'
 import SearchIcon from '@mui/icons-material/Search'
 import DescriptionIcon from '@mui/icons-material/Description'
 
-import ParamsModal from '../create/ParamsModal'
+// IMPORTACIÓN VENTANA MODAL
+import ParamsModal from '../modal/ParamsModal'
+import ViewUrlModal from '../modal/ViewUrlModal'
 
+// IMPORTACIÓN DE SERVICIOS
 import { scrapUrl } from '../../../../service/scraperService'
 
 const ScrapingParams = ({ webSites, fetchWebSites }) => {
@@ -51,6 +53,8 @@ const ScrapingParams = ({ webSites, fetchWebSites }) => {
   const [selectedWeb, setSelectedWeb] = useState(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [modalMode, setModalMode] = useState('create')
+  const [isUrlModalOpen, setIsUrlModalOpen] = useState(false)
+  const [selectedUrl, setSelectedUrl] = useState('')
 
   const theme = useTheme()
 
@@ -83,10 +87,20 @@ const ScrapingParams = ({ webSites, fetchWebSites }) => {
     setIsModalOpen(true)
   }
 
+  const handleOpenUrlModal = (url) => {
+    setSelectedUrl(url)
+    setIsUrlModalOpen(true)
+  }
+
   const handleCloseModal = () => {
     setSelectedWeb(null)
     setIsModalOpen(false)
     setModalMode('create')
+  }
+
+  const handleCloseUrlModal = () => {
+    setSelectedUrl('')
+    setIsUrlModalOpen(false)
   }
 
   const handleScrapSite = async site => {
@@ -233,7 +247,17 @@ const ScrapingParams = ({ webSites, fetchWebSites }) => {
               {sortedWebSites.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(site => (
                 <TableRow key={site.id} sx={{ '&:hover': { backgroundColor: theme.palette.action.hover } }}>
                   <TableCell align='center'>{site.type_file_display}</TableCell>
-                  <TableCell align='center'>{site.url}</TableCell>
+                  <TableCell 
+                    align='center'
+                    onClick={() => handleOpenUrlModal(site.url)} // Abre el modal al hacer clic
+                    sx={{ 
+                      cursor: 'pointer', 
+                      fontWeight: 'bold',
+                      '&:hover': { color: 'secondary.main' }
+                    }}
+                  >
+                    {site.url.length > 100 ? `${site.url.slice(0, 100)}...` : site.url}
+                  </TableCell>
                   <TableCell align='center'>{site.time_choices_display}</TableCell>
                   <TableCell align='center'>{new Date(site.updated_at).toLocaleDateString()}</TableCell>
                   <TableCell align='center'>
@@ -279,6 +303,11 @@ const ScrapingParams = ({ webSites, fetchWebSites }) => {
         onClose={handleCloseModal}
         web={selectedWeb}
         mode={modalMode}
+      />
+      <ViewUrlModal
+        url={selectedUrl}
+        open={isUrlModalOpen}
+        onClose={handleCloseUrlModal}
       />
     </Paper>
   )
