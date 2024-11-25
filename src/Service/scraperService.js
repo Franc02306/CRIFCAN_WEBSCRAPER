@@ -6,7 +6,7 @@ export const listUrls = () => {
 };
 
 export const getUrlByParams = (url) => {
-  return API.get(`/api/v1/scraped-get-url/`, {
+  return API.get(`/api/v1/scraped-get-pdf/`, {
     params: {
       url: url
     }
@@ -16,7 +16,7 @@ export const getUrlByParams = (url) => {
 
 // SERVICIO POST
 export const scrapUrl = (body) => {
-  return API.post('/api/v1/scrape-url/', body)
+  return API.post('/api/v1/scraper-pdf/', body)
 };
 
 export const addUrl = (body) => {

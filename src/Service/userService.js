@@ -10,9 +10,9 @@ export const getUserById = id => {
 	return API.get(`/api/users/${id}/`);
 };
 
-export const getSystemRoles = () => {
-	return API.get(`/api/data/system-roles/`);
-};
+// export const getSystemRoles = () => {
+// 	return API.get(`/api/data/system-roles/`);
+// };
 
 
 // SERVICIOS POST
