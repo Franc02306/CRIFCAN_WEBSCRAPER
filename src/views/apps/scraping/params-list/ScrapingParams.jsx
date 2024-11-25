@@ -271,6 +271,9 @@ const ScrapingParams = ({ webSites, fetchWebSites }) => {
                   Enlace Web
                 </TableCell>
                 <TableCell align='center' sx={{ color: theme.palette.primary.contrastText }}>
+                  Enlace Web
+                </TableCell>
+                <TableCell align='center' sx={{ color: theme.palette.primary.contrastText }}>
                   Frecuencia de Scrapeo
                 </TableCell>
                 <TableCell align='center' sx={{ color: theme.palette.primary.contrastText }}>

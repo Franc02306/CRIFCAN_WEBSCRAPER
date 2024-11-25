@@ -33,7 +33,8 @@ import { addUrl, updateUrl } from '../../../../service/scraperService'
 const initialData = {
   url: '',
   type_file: '',
-  time_choices: ''
+  time_choices: '',
+  sobreNombre: ''
 }
 
 const ParamsModal = ({ open, setIsModalOpen, onClose, web, mode, fetchWebSites }) => {
@@ -45,8 +46,6 @@ const ParamsModal = ({ open, setIsModalOpen, onClose, web, mode, fetchWebSites }
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const isEditMode = mode === 'edit'
-
-  console.log('web PROP: ', web)
 
   // TEMAS
   const theme = useTheme()
@@ -79,6 +78,13 @@ const ParamsModal = ({ open, setIsModalOpen, onClose, web, mode, fetchWebSites }
       return false
     }
 
+    if (!formData.sobreNombre) {
+      setWarnMessage('El campo Sobrenombre es obligatorio.')
+      setOpenWarnSnackbar(true)
+
+      return false
+    }
+
     if (!formData.type_file) {
       setWarnMessage('El campo Tipo de Documento es obligatorio.')
       setOpenWarnSnackbar(true)
@@ -89,6 +95,8 @@ const ParamsModal = ({ open, setIsModalOpen, onClose, web, mode, fetchWebSites }
     if (!formData.time_choices) {
       setWarnMessage('El campo Frecuencia de Scrapeo es obligatorio.')
       setOpenWarnSnackbar(true)
+
+      return false
     }
 
     return true
@@ -202,6 +210,19 @@ const ParamsModal = ({ open, setIsModalOpen, onClose, web, mode, fetchWebSites }
                 name='url'
                 value={formData.url}
                 onChange={e => setFormData({ ...formData, url: e.target.value })}
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                autoComplete='off'
+                margin='dense'
+                variant='outlined'
+                label='Sobrenombre'
+                type='text'
+                name='sobreNombre'
+                value={formData.sobreNombre}
+                onChange={e => setFormData({ ...formData, sobreNombre: e.target.value })}
                 fullWidth
               />
             </Grid>

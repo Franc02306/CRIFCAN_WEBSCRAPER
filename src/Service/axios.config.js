@@ -24,7 +24,22 @@ const addAuthToken = async (config) => {
   return config;
 };
 
+// FUNCION PARA EXTRAER EL MENSAJE DE ERROR DEL BACKEND
+const extractBackendErrorMessage = (error) => {
+  if (error.response?.data) {
+    const { data } = error.response;
 
+    if (typeof data === 'object') {
+      return Object.values(data).flat().join(' | '); // Combina mensajes en un solo string
+    }
+
+    return data;
+  }
+
+  return 'Ocurrió un error inesperado. Intente nuevamente.';
+}
+
+// FUNCION DE MANEJAR LOS ERRORES DE LA RESPUESTA
 
 
 // FUNCION PARA RENOVAR EL TOKEN
