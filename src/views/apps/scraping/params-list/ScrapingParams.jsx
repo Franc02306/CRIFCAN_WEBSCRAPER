@@ -264,11 +264,8 @@ const ScrapingParams = ({ webSites, fetchWebSites }) => {
                     direction={orderBy === 'type_file_display' ? order : 'asc'}
                     onClick={() => handleRequestSort('type_file_display')}
                   >
-                    Tipo
+                    Nombre
                   </TableSortLabel>
-                </TableCell>
-                <TableCell align='center' sx={{ color: theme.palette.primary.contrastText }}>
-                  Enlace Web
                 </TableCell>
                 <TableCell align='center' sx={{ color: theme.palette.primary.contrastText }}>
                   Enlace Web
