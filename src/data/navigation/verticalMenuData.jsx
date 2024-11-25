@@ -42,6 +42,11 @@ const verticalMenuData = (dictionary, params, session) => [
         label: dictionary['navigation'].cangpt,
         icon: 'tabler-robot',
         href: `/en/apps/can-gpt/chat`,
+      },
+      {
+        label: dictionary['navigation'].dashboard,
+        icon: 'tabler-chart-bar',
+        href: `/en/apps/dashboard/report`
       }
     ]
   }

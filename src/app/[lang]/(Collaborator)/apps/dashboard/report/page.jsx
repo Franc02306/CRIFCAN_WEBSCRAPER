@@ -1,12 +1,12 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import { CircularProgress, Box, Typography } from '@mui/material'
 
-import CanGptIndex from '../../../../../../views/apps/can-gpt/chat/index'
+import DashboardIndex from '../../../../../../views/apps/dashboard/report'
 
-const CanChatGptPage = () => {
+const DashboardPage = () => {
   const [isLoading] = useState(false)
   const [error] = useState(null)
 
@@ -43,7 +43,7 @@ const CanChatGptPage = () => {
     )
   }
 
-  return <CanGptIndex />
+  return <DashboardIndex />
 }
 
-export default CanChatGptPage
+export default DashboardPage
