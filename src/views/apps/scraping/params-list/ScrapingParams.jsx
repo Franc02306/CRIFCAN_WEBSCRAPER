@@ -88,6 +88,10 @@ const ScrapingParams = ({ webSites, fetchWebSites }) => {
       const valueA = a[orderBy]?.toLowerCase() || ''
       const valueB = b[orderBy]?.toLowerCase() || ''
 
+      // Si uno de los valores es vacío o nulo, lo coloca al final
+      if (!valueA && valueB) return 1 // `a` vacío, va después
+      if (!valueB && valueA) return -1 // `b` vacío, va después
+
       return order === 'asc' ? valueA.localeCompare(valueB) : valueB.localeCompare(valueA)
     })
   }, [filteredWebSites, order, orderBy])
@@ -131,7 +135,7 @@ const ScrapingParams = ({ webSites, fetchWebSites }) => {
 
     const payload = {
       url: site.url,
-      type_file: site.type_file,
+      sobrenombre: site.sobrenombre,
       time_choices: newFrequency
     }
 
@@ -287,7 +291,16 @@ const ScrapingParams = ({ webSites, fetchWebSites }) => {
                     Nombre
                   </TableSortLabel>
                 </TableCell>
-                <TableCell align='center' sx={{ color: theme.palette.primary.contrastText }}>
+                <TableCell
+                  align='center'
+                  sx={{
+                    minWidth: '150px', // Establece un ancho mínimo
+                    maxWidth: '80vh',
+                    wordBreak: 'break-word',
+                    whiteSpace: 'normal',
+                    color: theme.palette.primary.contrastText
+                  }}
+                >
                   Enlace Web
                 </TableCell>
                 <TableCell align='center' sx={{ color: theme.palette.primary.contrastText }}>
@@ -316,7 +329,16 @@ const ScrapingParams = ({ webSites, fetchWebSites }) => {
                   >
                     {site.sobrenombre}
                   </TableCell>
-                  <TableCell align='center'>
+                  <TableCell
+                    align='center'
+                    sx={{
+                      minWidth: '150px', // Establece un ancho mínimo
+                      maxWidth: '80vh',
+                      wordBreak: 'break-word',
+                      whiteSpace: 'normal',
+                      color: theme.palette.primary.contrastText
+                    }}
+                  >
                     <span
                       onClick={() => handleOpenUrlModal(site.url)}
                       style={{

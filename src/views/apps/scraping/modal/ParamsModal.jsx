@@ -205,6 +205,7 @@ const ParamsModal = ({ open, setIsModalOpen, onClose, web, mode, fetchWebSites }
                 value={formData.url}
                 onChange={e => setFormData({ ...formData, url: e.target.value })}
                 fullWidth
+                disabled
               />
             </Grid>
             <Grid item xs={12}>
@@ -216,7 +217,11 @@ const ParamsModal = ({ open, setIsModalOpen, onClose, web, mode, fetchWebSites }
                 type='text'
                 name='sobrenombre'
                 value={formData.sobrenombre}
-                onChange={e => setFormData({ ...formData, sobrenombre: e.target.value })}
+                onChange={e => {
+                  const updatedValue = e.target.value.toUpperCase().replace(/ /g, '_')
+                  
+                  setFormData({ ...formData, sobrenombre: updatedValue })
+                }}
                 fullWidth
               />
             </Grid>
