@@ -56,12 +56,13 @@ const ScrapingParams = ({ webSites, fetchWebSites }) => {
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
   const [order, setOrder] = useState('asc')
-  const [orderBy, setOrderBy] = useState('type_file_display')
+  const [orderBy, setOrderBy] = useState('sobrenombre')
   const [selectedWeb, setSelectedWeb] = useState(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [modalMode, setModalMode] = useState('create')
   const [isUrlModalOpen, setIsUrlModalOpen] = useState(false)
   const [selectedUrl, setSelectedUrl] = useState('')
+  const [searchTerm, setSearchTerm] = useState('')
 
   const theme = useTheme()
 
@@ -78,14 +79,23 @@ const ScrapingParams = ({ webSites, fetchWebSites }) => {
     setOrderBy(property)
   }
 
+  const filteredWebSites = useMemo(() => {
+    return (webSites || []).filter(site => site.sobrenombre?.toLowerCase().includes(searchTerm.toLowerCase()))
+  }, [webSites, searchTerm])
+
   const sortedWebSites = useMemo(() => {
-    return [...webSites].sort((a, b) => {
+    return [...filteredWebSites].sort((a, b) => {
       const valueA = a[orderBy]?.toLowerCase() || ''
       const valueB = b[orderBy]?.toLowerCase() || ''
 
       return order === 'asc' ? valueA.localeCompare(valueB) : valueB.localeCompare(valueA)
     })
-  }, [webSites, order, orderBy])
+  }, [filteredWebSites, order, orderBy])
+
+  const handleSearchChange = event => {
+    setSearchTerm(event.target.value)
+    setPage(0)
+  }
 
   const handleChangePage = (event, newPage) => setPage(newPage)
 
@@ -207,6 +217,7 @@ const ScrapingParams = ({ webSites, fetchWebSites }) => {
               type='text'
               size='small'
               autoComplete='off'
+              onChange={handleSearchChange}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position='start'>
@@ -218,11 +229,11 @@ const ScrapingParams = ({ webSites, fetchWebSites }) => {
             />
           </Grid>
 
-          <Grid item xs={12} md='auto'>
+          {/* <Grid item xs={12} md='auto'>
             <Button variant='contained' color='primary' startIcon={<AddIcon />} onClick={() => handleOpenModal()}>
               Agregar Fuente Web
             </Button>
-          </Grid>
+          </Grid> */}
         </Grid>
       </Box>
 
@@ -258,11 +269,20 @@ const ScrapingParams = ({ webSites, fetchWebSites }) => {
           >
             <TableHead style={{ backgroundColor: theme.palette.primary.main }}>
               <TableRow>
-                <TableCell align='center' sx={{ color: theme.palette.primary.contrastText }}>
+                <TableCell
+                  align='center'
+                  sx={{
+                    minWidth: '150px', // Establece un ancho mínimo
+                    maxWidth: '300px',
+                    wordBreak: 'break-word',
+                    whiteSpace: 'normal',
+                    color: theme.palette.primary.contrastText
+                  }}
+                >
                   <TableSortLabel
-                    active={orderBy === 'type_file_display'}
-                    direction={orderBy === 'type_file_display' ? order : 'asc'}
-                    onClick={() => handleRequestSort('type_file_display')}
+                    active={orderBy === 'sobrenombre'}
+                    direction={orderBy === 'sobrenombre' ? order : 'asc'}
+                    onClick={() => handleRequestSort('sobrenombre')}
                   >
                     Nombre
                   </TableSortLabel>
@@ -285,7 +305,17 @@ const ScrapingParams = ({ webSites, fetchWebSites }) => {
             <TableBody>
               {sortedWebSites.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(site => (
                 <TableRow key={site.id} sx={{ '&:hover': { backgroundColor: theme.palette.action.hover } }}>
-                  <TableCell align='center'>{site.type_file_display}</TableCell>
+                  <TableCell
+                    align='center'
+                    sx={{
+                      minWidth: '150px', // Establece un ancho mínimo
+                      maxWidth: '300px',
+                      wordBreak: 'break-word',
+                      whiteSpace: 'normal'
+                    }}
+                  >
+                    {site.sobrenombre}
+                  </TableCell>
                   <TableCell align='center'>
                     <span
                       onClick={() => handleOpenUrlModal(site.url)}
@@ -342,7 +372,7 @@ const ScrapingParams = ({ webSites, fetchWebSites }) => {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component='div'
-          count={webSites.length}
+          count={sortedWebSites.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}

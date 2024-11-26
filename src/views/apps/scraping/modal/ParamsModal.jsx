@@ -32,9 +32,8 @@ import { addUrl, updateUrl } from '../../../../service/scraperService'
 
 const initialData = {
   url: '',
-  type_file: '',
   time_choices: '',
-  sobreNombre: ''
+  sobrenombre: ''
 }
 
 const ParamsModal = ({ open, setIsModalOpen, onClose, web, mode, fetchWebSites }) => {
@@ -78,15 +77,8 @@ const ParamsModal = ({ open, setIsModalOpen, onClose, web, mode, fetchWebSites }
       return false
     }
 
-    if (!formData.sobreNombre) {
+    if (!formData.sobrenombre) {
       setWarnMessage('El campo Sobrenombre es obligatorio.')
-      setOpenWarnSnackbar(true)
-
-      return false
-    }
-
-    if (!formData.type_file) {
-      setWarnMessage('El campo Tipo de Documento es obligatorio.')
       setOpenWarnSnackbar(true)
 
       return false
@@ -154,6 +146,8 @@ const ParamsModal = ({ open, setIsModalOpen, onClose, web, mode, fetchWebSites }
       handleCloseModal()
     } catch (error) {
       console.error('Error en la solicitud: ', error)
+      setError(error)
+      setOpenErrorSnackbar(true)
     } finally {
       setIsSubmitting(false)
     }
@@ -220,24 +214,11 @@ const ParamsModal = ({ open, setIsModalOpen, onClose, web, mode, fetchWebSites }
                 variant='outlined'
                 label='Sobrenombre'
                 type='text'
-                name='sobreNombre'
-                value={formData.sobreNombre}
-                onChange={e => setFormData({ ...formData, sobreNombre: e.target.value })}
+                name='sobrenombre'
+                value={formData.sobrenombre}
+                onChange={e => setFormData({ ...formData, sobrenombre: e.target.value })}
                 fullWidth
               />
-            </Grid>
-            <Grid item xs={12} sx={{ marginTop: '5px', marginBottom: '5px' }}>
-              <FormControl fullWidth>
-                <InputLabel>Tipo de Documento</InputLabel>
-                <Select
-                  value={formData.type_file}
-                  onChange={e => setFormData({ ...formData, type_file: e.target.value })}
-                  label='Tipo de Documento'
-                >
-                  <MenuItem value={1}>Web</MenuItem>
-                  <MenuItem value={2}>PDF</MenuItem>
-                </Select>
-              </FormControl>
             </Grid>
             <Grid item xs={12} sx={{ marginTop: '5px', marginBottom: '5px' }}>
               <FormControl fullWidth>
