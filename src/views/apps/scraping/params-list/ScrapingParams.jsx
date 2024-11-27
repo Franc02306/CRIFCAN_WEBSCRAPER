@@ -26,7 +26,8 @@ import {
   Grid,
   InputAdornment,
   TextField,
-  Divider
+  Divider,
+  CircularProgress
 } from '@mui/material'
 
 import Swal from 'sweetalert2'
@@ -63,6 +64,7 @@ const ScrapingParams = ({ webSites, fetchWebSites }) => {
   const [isUrlModalOpen, setIsUrlModalOpen] = useState(false)
   const [selectedUrl, setSelectedUrl] = useState('')
   const [searchTerm, setSearchTerm] = useState('')
+  const [loadingSite, setLoadingSite] = useState(null)
 
   const theme = useTheme()
 
@@ -174,17 +176,8 @@ const ScrapingParams = ({ webSites, fetchWebSites }) => {
     })
 
     if (result.isConfirmed) {
-      Swal.fire({
-        html: `<span style="font-family: Arial, sans-serif; font-size: 28px; color: ${titleColor};">Scrapeando...</span>`,
-        allowOutsideClick: false,
-        showConfirmButton: false,
-        background: backgroundColor,
-        didOpen: () => {
-          Swal.showLoading()
-        }
-      })
-
       try {
+        setLoadingSite(site.id)   
         await scrapUrl({ url: site.url, tipo: site.type_file })
 
         Swal.fire({
@@ -195,8 +188,6 @@ const ScrapingParams = ({ webSites, fetchWebSites }) => {
           timer: 4000
         })
 
-        // console.log('Respuesta de la API:', response.data)
-
         fetchWebSites() // Actualización en tiempo real
       } catch (error) {
         console.error('Error ejecutando el scraping:', error)
@@ -206,7 +197,11 @@ const ScrapingParams = ({ webSites, fetchWebSites }) => {
           confirmButtonColor: confirmButtonColor,
           background: backgroundColor
         })
+      } finally {
+        setLoadingSite(null)
       }
+    } else {
+      setLoadingSite(null)
     }
   }
 
@@ -367,21 +362,30 @@ const ScrapingParams = ({ webSites, fetchWebSites }) => {
                   </TableCell>
                   <TableCell align='center'>{new Date(site.updated_at).toLocaleDateString()}</TableCell>
                   <TableCell align='center'>
-                    <Tooltip title='Editar'>
-                      <IconButton color='info' onClick={() => handleOpenModal(site)}>
-                        <EditIcon />
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip title='Scrapear'>
-                      <IconButton color='success' onClick={() => handleScrapSite(site)}>
-                        <UpdateIcon />
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip title='Registro de Actividad'>
-                      <IconButton>
-                        <DescriptionIcon />
-                      </IconButton>
-                    </Tooltip>
+                    {loadingSite === site.id ? (
+                      <Box display='flex' alignItems='center' justifyContent='center' gap={1}>
+                        <Typography variant='body2'>Scrapeando...</Typography> {/* Texto "Scrapeando..." */}
+                        <CircularProgress size={20} /> {/* Spinner */}
+                      </Box>
+                    ) : (
+                      <>
+                        <Tooltip title='Editar'>
+                          <IconButton color='info' onClick={() => handleOpenModal(site)}>
+                            <EditIcon />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title='Scrapear'>
+                          <IconButton color='success' onClick={() => handleScrapSite(site)}>
+                            <UpdateIcon />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title='Registro de Actividad'>
+                          <IconButton>
+                            <DescriptionIcon />
+                          </IconButton>
+                        </Tooltip>
+                      </>
+                    )}
                   </TableCell>
                 </TableRow>
               ))}
