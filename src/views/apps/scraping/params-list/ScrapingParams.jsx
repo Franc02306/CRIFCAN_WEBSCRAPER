@@ -282,6 +282,18 @@ const ScrapingParams = ({ webSites, fetchWebSites }) => {
                     active={orderBy === 'sobrenombre'}
                     direction={orderBy === 'sobrenombre' ? order : 'asc'}
                     onClick={() => handleRequestSort('sobrenombre')}
+                    sx={{
+                      color: theme.palette.primary.contrastText + ' !important',
+                      '& .MuiTableSortLabel-icon': {
+                        color: theme.palette.primary.contrastText + ' !important'
+                      },
+                      '&.Mui-active': {
+                        color: theme.palette.primary.contrastText + ' !important',
+                        '& .MuiTableSortLabel-icon': {
+                          color: theme.palette.primary.contrastText + ' !important'
+                        }
+                      }
+                    }}
                   >
                     Nombre
                   </TableSortLabel>
@@ -340,7 +352,8 @@ const ScrapingParams = ({ webSites, fetchWebSites }) => {
                         cursor: 'pointer',
                         fontWeight: 'bold',
                         textDecoration: 'underline',
-                        '&:hover': { color: 'secondary.main' }
+                        color: theme.palette.mode === 'dark' ? 'white' : 'black',
+                        '&:hover': { color: theme.palette.mode === 'dark' ? 'lightgray' : 'secondary.main' }
                       }}
                     >
                       {site.url.length > 100 ? `${site.url.slice(0, 100)}...` : site.url}
