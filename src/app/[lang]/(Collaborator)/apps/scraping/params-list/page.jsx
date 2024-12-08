@@ -63,7 +63,7 @@ const ParamsListApp = () => {
 
   useEffect(() => {
     fetchWebSites()
-  }, [])
+  }, [fetchWebSites])
 
   if (isLoading) {
     return (
