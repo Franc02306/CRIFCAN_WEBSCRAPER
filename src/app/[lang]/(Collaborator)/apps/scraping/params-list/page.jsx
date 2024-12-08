@@ -52,12 +52,12 @@ const ParamsListApp = () => {
           }
         } catch (error) {
           console.error(`Error al obtener datos de scraping para URL ${urlItem.url}:`, error)
-          // Devuelvo el registro original si hay un error con getUrlByParams
         }
-        // Si no hay datos en getUrlByParams o si ocurrió un error, devuelvo el registro original
+
         return urlItem
       })
     )
+
     return updatedUrls
   }
 

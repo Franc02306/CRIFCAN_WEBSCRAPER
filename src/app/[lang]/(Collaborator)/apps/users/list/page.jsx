@@ -43,7 +43,7 @@ const UserListApp = () => {
 
   useEffect(() => {
     getListUsers(statusFilter)
-  }, [])
+  }, [statusFilter])
 
   if (isLoading) {
     return (
