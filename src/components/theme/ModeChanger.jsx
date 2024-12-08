@@ -25,7 +25,7 @@ const ModeChanger = () => {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [settings.mode, isDark])
+  }, [settings.mode])
 
   return null
 }
