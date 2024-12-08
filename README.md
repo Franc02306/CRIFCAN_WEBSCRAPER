@@ -11,8 +11,7 @@ First, install the dependencies:
 ## Commands
 
 ```sh
-npm install
-npm install --force     ## in case of error, execute this commnand
+npm install --legacy-peer-deps
 ```
 
 
