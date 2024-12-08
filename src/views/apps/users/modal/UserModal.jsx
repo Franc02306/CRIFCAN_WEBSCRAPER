@@ -45,7 +45,7 @@ const UserModal = ({ open, setIsModalOpen, onClose, onUserAdded, user, mode }) =
   const [openWarnSnackbar, setOpenWarnSnackbar] = useState(false)
   const [infoMessage, setInfoMessage] = useState('')
   const [openInfoSnackbar, setOpenInfoSnackbar] = useState(false)
-  const [error, setError] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null)
   const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
@@ -251,14 +251,11 @@ const UserModal = ({ open, setIsModalOpen, onClose, onUserAdded, user, mode }) =
     } catch (error) {
       console.error('Error en la solicitud: ', error)
 
-      if (error.response && error.response.data.email) {
-        const emailErrors = error.response.data.email
+      // Si ocurre un error, mostramos un mensaje de error genérico en el Snackbar
+      const errorMessage = error || 'Ocurrió un error inesperado.'
 
-        if (emailErrors.includes('user with this email already exists.')) {
-          setError('El correo electrónico ya está en uso.')
-          setOpenErrorSnackbar(true)
-        }
-      }
+      setErrorMessage(errorMessage)
+      setOpenErrorSnackbar(true)
     } finally {
       setIsSubmitting(false) // Desbloquear botón al terminar la solicitud
     }
@@ -437,7 +434,7 @@ const UserModal = ({ open, setIsModalOpen, onClose, onUserAdded, user, mode }) =
             boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.9)'
           }}
         >
-          {error}
+          {errorMessage} {/* Mostrar el mensaje de error */}
         </Alert>
       </Snackbar>
 
