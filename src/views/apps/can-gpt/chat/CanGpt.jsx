@@ -2,11 +2,6 @@
 
 import React, { useState, useEffect, useMemo } from 'react'
 
-import { useTheme, ThemeProvider, createTheme } from '@mui/material/styles'
-import { Box, TextField, Button, Paper, Typography, Chip } from '@mui/material'
-import { MessageBox, MessageList } from 'react-chat-elements'
-import 'react-chat-elements/dist/main.css'
-
 const CanGpt = () => {
   return (
     <div className='App'>

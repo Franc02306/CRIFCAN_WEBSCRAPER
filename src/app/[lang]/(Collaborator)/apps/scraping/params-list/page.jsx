@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import { CircularProgress, Box, Typography } from '@mui/material'
 
@@ -13,7 +13,7 @@ const ParamsListApp = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(null)
 
-  const fetchWebSites = async () => {
+  const fetchWebSites = useCallback(async () => {
     try {
       setIsLoading(true)
 
@@ -28,7 +28,7 @@ const ParamsListApp = () => {
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [])
 
   const filterRecentUrls = async urls => {
     // Mapeo de URLs de listUrls y comparación con getUrlByParams para mantener la más reciente
