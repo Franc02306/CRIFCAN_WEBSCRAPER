@@ -251,10 +251,14 @@ const UserModal = ({ open, setIsModalOpen, onClose, onUserAdded, user, mode }) =
     } catch (error) {
       console.error('Error en la solicitud: ', error)
 
-      // Si ocurre un error, mostramos un mensaje de error genérico en el Snackbar
-      const errorMessage = error || 'Ocurrió un error inesperado.'
+      // Dividir los mensajes por '|', obteniendo el último mensaje
+      const errorMessages = error.split('|').map(msg => msg.trim())
 
-      setErrorMessage(errorMessage)
+      // Obtener el último mensaje de error
+      const lastErrorMessage = errorMessages[errorMessages.length - 1]
+
+      // Mostrar el último mensaje en el Snackbar de errores
+      setErrorMessage(lastErrorMessage)
       setOpenErrorSnackbar(true)
     } finally {
       setIsSubmitting(false) // Desbloquear botón al terminar la solicitud
