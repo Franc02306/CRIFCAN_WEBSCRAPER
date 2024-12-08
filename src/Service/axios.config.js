@@ -17,7 +17,6 @@ const addAuthToken = async config => {
   const token = session?.accessToken || localStorage.getItem('token')
 
   if (token) {
-    console.log('Using token:', token)
     config.headers['Authorization'] = `Bearer ${token}`
   }
 

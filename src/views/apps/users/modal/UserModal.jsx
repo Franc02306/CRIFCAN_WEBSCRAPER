@@ -171,17 +171,25 @@ const UserModal = ({ open, setIsModalOpen, onClose, onUserAdded, user, mode }) =
 
   const handleUsernameChange = e => {
     const value = e.target.value
+    const regex = /^[a-zA-ZÀ-ÿ\u00f1\u00d1\s]*$/
 
-    if (validateUsername(value)) {
+    if (regex.test(value) && validateUsername(value)) {
       setFormData({ ...formData, username: value })
+    } else {
+      setInfoMessage('El campo Nombres solo puede contener letras.')
+      setOpenInfoSnackbar(true)
     }
   }
 
   const handleLastNameChange = e => {
     const value = e.target.value
+    const regex = /^[a-zA-ZÀ-ÿ\u00f1\u00d1\s]*$/
 
-    if (validateLastName(value)) {
+    if (regex.test(value) && validateLastName(value)) {
       setFormData({ ...formData, last_name: value })
+    } else {
+      setInfoMessage('El campo Apellidos solo puede contener letras.')
+      setOpenInfoSnackbar(true)
     }
   }
 
@@ -310,6 +318,7 @@ const UserModal = ({ open, setIsModalOpen, onClose, onUserAdded, user, mode }) =
                 onChange={handleUsernameChange}
                 inputProps={{ maxLength: 101 }}
                 fullWidth
+                disabled={isSubmitting}
               />
             </Grid>
             <Grid item xs={12}>
@@ -324,6 +333,7 @@ const UserModal = ({ open, setIsModalOpen, onClose, onUserAdded, user, mode }) =
                 onChange={handleLastNameChange}
                 inputProps={{ maxLength: 101 }}
                 fullWidth
+                disabled={isSubmitting}
               />
             </Grid>
             <Grid item xs={12}>
@@ -338,6 +348,7 @@ const UserModal = ({ open, setIsModalOpen, onClose, onUserAdded, user, mode }) =
                 type='email'
                 inputProps={{ maxLength: 201 }}
                 fullWidth
+                disabled={isSubmitting}
               />
             </Grid>
             <Grid item xs={12} sx={{ marginTop: '5px', marginBottom: '5px' }}>
@@ -347,6 +358,7 @@ const UserModal = ({ open, setIsModalOpen, onClose, onUserAdded, user, mode }) =
                   value={formData.system_role}
                   onChange={e => setFormData({ ...formData, system_role: e.target.value })}
                   label='Rol de Sistema'
+                  disabled={isSubmitting}
                 >
                   <MenuItem value={1}>Administrador del sistema</MenuItem>
                   <MenuItem value={2}>Funcionario</MenuItem>
@@ -361,6 +373,7 @@ const UserModal = ({ open, setIsModalOpen, onClose, onUserAdded, user, mode }) =
                   onChange={e => setFormData({ ...formData, password: e.target.value })}
                   type={showPassword ? 'text' : 'password'}
                   autoComplete='new-password'
+                  disabled={isSubmitting}
                   InputProps={{
                     endAdornment: (
                       <IconButton onClick={handleClickShowPassword}>
