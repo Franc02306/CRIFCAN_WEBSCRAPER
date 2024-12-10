@@ -27,7 +27,9 @@ import {
   InputAdornment,
   TextField,
   Divider,
-  CircularProgress
+  CircularProgress,
+  Snackbar,
+  Alert
 } from '@mui/material'
 
 import Swal from 'sweetalert2'
@@ -53,7 +55,7 @@ const frequencyOptions = [
   { id: 3, label: 'Semestral' }
 ]
 
-const ScrapingParams = ({ webSites, fetchWebSites }) => {
+const ScrapingParams = ({ webSites, fetchWebSites, updateSingleWebsite }) => {
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
   const [order, setOrder] = useState('asc')
@@ -65,6 +67,8 @@ const ScrapingParams = ({ webSites, fetchWebSites }) => {
   const [selectedUrl, setSelectedUrl] = useState('')
   const [searchTerm, setSearchTerm] = useState('')
   const [loadingSite, setLoadingSite] = useState(null)
+  const [snackbarOpen, setSnackbarOpen] = useState(false)
+  const [snackbarMessage, setSnackbarMessage] = useState('')
 
   const theme = useTheme()
 
@@ -177,26 +181,23 @@ const ScrapingParams = ({ webSites, fetchWebSites }) => {
 
     if (result.isConfirmed) {
       try {
-        setLoadingSite(site.id)   
-        await scrapUrl({ url: site.url, tipo: site.type_file })
+        setLoadingSite(site.id)
+        const response = await scrapUrl({ url: site.url, tipo: site.type_file })
 
-        Swal.fire({
-          icon: 'success',
-          html: `<span style="font-family: Arial, sans-serif; font-size: 26px; color: ${titleColor};">Scrapeo completado con éxito</span>`,
-          confirmButtonColor: confirmButtonColor,
-          background: backgroundColor,
-          timer: 4000
+        setSnackbarMessage(response.data.Mensaje || 'Los datos han sido scrapeados correctamente.')
+        setSnackbarOpen(true)
+
+        updateSingleWebsite(site.id, {
+          updated_at: new Date().toISOString(), // Fecha de última actualización
+          // status: 'completado' // Ejemplo de estado que puede cambiar
         })
 
-        fetchWebSites() // Actualización en tiempo real
+        // fetchWebSites() // Actualización en tiempo real
+
       } catch (error) {
         console.error('Error ejecutando el scraping:', error)
-        Swal.fire({
-          icon: 'error',
-          html: `<span style="font-family: Arial, sans-serif; font-size: 26px; color: ${titleColor};">Hubo un error ejecutando el Scrapeo</span>`,
-          confirmButtonColor: confirmButtonColor,
-          background: backgroundColor
-        })
+        setSnackbarMessage('Hubo un error ejecutando el Scrapeo')
+        setSnackbarOpen(true)
       } finally {
         setLoadingSite(null)
       }
@@ -205,136 +206,101 @@ const ScrapingParams = ({ webSites, fetchWebSites }) => {
     }
   }
 
-  return (
-    <Paper sx={{ width: '100%', overflow: 'hidden', marginTop: 3 }}>
-      <Box sx={{ padding: 5 }}>
-        <Grid container spacing={2} alignItems='center' sx={{ marginBottom: 2 }}>
-          {/* Filtro por fuente web */}
-          <Grid item xs={12} md>
-            <TextField
-              label='Buscar por Fuente Web'
-              type='text'
-              size='small'
-              autoComplete='off'
-              onChange={handleSearchChange}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position='start'>
-                    <SearchIcon />
-                  </InputAdornment>
-                )
-              }}
-              style={{ marginRight: '5px', width: '300px' }}
-            />
-          </Grid>
+  const handleCloseSnackbar = () => setSnackbarOpen(false)
 
-          {/* <Grid item xs={12} md='auto'>
+  return (
+    <>
+      <Paper sx={{ width: '100%', overflow: 'hidden', marginTop: 3 }}>
+        <Box sx={{ padding: 5 }}>
+          <Grid container spacing={2} alignItems='center' sx={{ marginBottom: 2 }}>
+            {/* Filtro por fuente web */}
+            <Grid item xs={12} md>
+              <TextField
+                label='Buscar por Fuente Web'
+                type='text'
+                size='small'
+                autoComplete='off'
+                onChange={handleSearchChange}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position='start'>
+                      <SearchIcon />
+                    </InputAdornment>
+                  )
+                }}
+                style={{ marginRight: '5px', width: '300px' }}
+              />
+            </Grid>
+
+            {/* <Grid item xs={12} md='auto'>
             <Button variant='contained' color='primary' startIcon={<AddIcon />} onClick={() => handleOpenModal()}>
               Agregar Fuente Web
             </Button>
           </Grid> */}
-        </Grid>
-      </Box>
+          </Grid>
+        </Box>
 
-      <Box sx={{ padding: '0' }}>
-        <Divider sx={{ width: '100%' }} />
-      </Box>
+        <Box sx={{ padding: '0' }}>
+          <Divider sx={{ width: '100%' }} />
+        </Box>
 
-      <Box sx={{ padding: 5 }}>
-        <Grid container spacing={2} alignItems='center' sx={{ marginBottom: 2 }}>
-          <Typography variant='h5' sx={{ fontWeight: 'bold', marginLeft: '12px', marginBottom: '10px' }}>
-            Parámetros de Scrapeo
-          </Typography>
-        </Grid>
+        <Box sx={{ padding: 5 }}>
+          <Grid container spacing={2} alignItems='center' sx={{ marginBottom: 2 }}>
+            <Typography variant='h5' sx={{ fontWeight: 'bold', marginLeft: '12px', marginBottom: '10px' }}>
+              Parámetros de Scrapeo
+            </Typography>
+          </Grid>
 
-        <TableContainer
-          sx={{
-            marginTop: 2,
-            borderRadius: 1.5, // Curva los bordes del contenedor
-            overflow: 'hidden', // Evita que los elementos se desborden
-            overflowX: 'auto'
-          }}
-        >
-          <Table
+          <TableContainer
             sx={{
-              '& .MuiTableCell-root': {
-                border:
-                  theme.palette.mode === 'light'
-                    ? '1px solid rgba(0, 0, 0, 0.35)'
-                    : '1px solid rgba(255, 255, 255, 0.18)',
-                fontSize: '0.9rem'
-              }
+              marginTop: 2,
+              borderRadius: 1.5, // Curva los bordes del contenedor
+              overflow: 'hidden', // Evita que los elementos se desborden
+              overflowX: 'auto'
             }}
           >
-            <TableHead style={{ backgroundColor: theme.palette.primary.main }}>
-              <TableRow>
-                <TableCell
-                  align='center'
-                  sx={{
-                    minWidth: '150px', // Establece un ancho mínimo
-                    maxWidth: '300px',
-                    wordBreak: 'break-word',
-                    whiteSpace: 'normal',
-                    color: theme.palette.primary.contrastText
-                  }}
-                >
-                  <TableSortLabel
-                    active={orderBy === 'sobrenombre'}
-                    direction={orderBy === 'sobrenombre' ? order : 'asc'}
-                    onClick={() => handleRequestSort('sobrenombre')}
-                    sx={{
-                      color: theme.palette.primary.contrastText + ' !important',
-                      '& .MuiTableSortLabel-icon': {
-                        color: theme.palette.primary.contrastText + ' !important'
-                      },
-                      '&.Mui-active': {
-                        color: theme.palette.primary.contrastText + ' !important',
-                        '& .MuiTableSortLabel-icon': {
-                          color: theme.palette.primary.contrastText + ' !important'
-                        }
-                      }
-                    }}
-                  >
-                    Nombre
-                  </TableSortLabel>
-                </TableCell>
-                <TableCell
-                  align='center'
-                  sx={{
-                    minWidth: '150px', // Establece un ancho mínimo
-                    maxWidth: '80vh',
-                    wordBreak: 'break-word',
-                    whiteSpace: 'normal',
-                    color: theme.palette.primary.contrastText
-                  }}
-                >
-                  Enlace Web
-                </TableCell>
-                <TableCell align='center' sx={{ color: theme.palette.primary.contrastText }}>
-                  Frecuencia de Scrapeo
-                </TableCell>
-                <TableCell align='center' sx={{ color: theme.palette.primary.contrastText }}>
-                  Última Fecha de Scrapeo
-                </TableCell>
-                <TableCell align='center' sx={{ color: theme.palette.primary.contrastText }}>
-                  Acciones
-                </TableCell>
-              </TableRow>
-            </TableHead>
-
-            <TableBody>
-              {sortedWebSites.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(site => (
-                <TableRow key={site.id} sx={{ '&:hover': { backgroundColor: theme.palette.action.hover } }}>
+            <Table
+              sx={{
+                '& .MuiTableCell-root': {
+                  border:
+                    theme.palette.mode === 'light'
+                      ? '1px solid rgba(0, 0, 0, 0.35)'
+                      : '1px solid rgba(255, 255, 255, 0.18)',
+                  fontSize: '0.9rem'
+                }
+              }}
+            >
+              <TableHead style={{ backgroundColor: theme.palette.primary.main }}>
+                <TableRow>
                   <TableCell
                     align='center'
                     sx={{
                       minWidth: '150px', // Establece un ancho mínimo
                       maxWidth: '300px',
                       wordBreak: 'break-word',
-                      whiteSpace: 'normal'
+                      whiteSpace: 'normal',
+                      color: theme.palette.primary.contrastText
                     }}
                   >
-                    {site.sobrenombre}
+                    <TableSortLabel
+                      active={orderBy === 'sobrenombre'}
+                      direction={orderBy === 'sobrenombre' ? order : 'asc'}
+                      onClick={() => handleRequestSort('sobrenombre')}
+                      sx={{
+                        color: theme.palette.primary.contrastText + ' !important',
+                        '& .MuiTableSortLabel-icon': {
+                          color: theme.palette.primary.contrastText + ' !important'
+                        },
+                        '&.Mui-active': {
+                          color: theme.palette.primary.contrastText + ' !important',
+                          '& .MuiTableSortLabel-icon': {
+                            color: theme.palette.primary.contrastText + ' !important'
+                          }
+                        }
+                      }}
+                    >
+                      Nombre
+                    </TableSortLabel>
                   </TableCell>
                   <TableCell
                     align='center'
@@ -346,90 +312,140 @@ const ScrapingParams = ({ webSites, fetchWebSites }) => {
                       color: theme.palette.primary.contrastText
                     }}
                   >
-                    <span
-                      onClick={() => handleOpenUrlModal(site.url)}
-                      style={{
-                        cursor: 'pointer',
-                        fontWeight: 'bold',
-                        textDecoration: 'underline',
-                        color: theme.palette.mode === 'dark' ? 'white' : 'black',
-                        '&:hover': { color: theme.palette.mode === 'dark' ? 'lightgray' : 'secondary.main' }
-                      }}
-                    >
-                      {site.url.length > 100 ? `${site.url.slice(0, 100)}...` : site.url}
-                    </span>
+                    Enlace Web
                   </TableCell>
-                  <TableCell align='center'>
-                    <Select
-                      value={site.time_choices} // El valor inicial de la frecuencia
-                      onChange={e => handleFrequencyChange(e, site)} // Maneja el cambio de frecuencia
-                      fullWidth
-                      size='small'
-                    >
-                      {frequencyOptions.map(option => (
-                        <MenuItem key={option.id} value={option.id}>
-                          {option.label}
-                        </MenuItem>
-                      ))}
-                    </Select>
+                  <TableCell align='center' sx={{ color: theme.palette.primary.contrastText }}>
+                    Frecuencia de Scrapeo
                   </TableCell>
-                  <TableCell align='center'>{new Date(site.updated_at).toLocaleDateString()}</TableCell>
-                  <TableCell align='center'>
-                    {loadingSite === site.id ? (
-                      <Box display='flex' alignItems='center' justifyContent='center' gap={1}>
-                        <Typography variant='body2'>Scrapeando...</Typography> {/* Texto "Scrapeando..." */}
-                        <CircularProgress size={20} /> {/* Spinner */}
-                      </Box>
-                    ) : (
-                      <>
-                        <Tooltip title='Editar'>
-                          <IconButton color='info' onClick={() => handleOpenModal(site)}>
-                            <EditIcon />
-                          </IconButton>
-                        </Tooltip>
-                        <Tooltip title='Scrapear'>
-                          <IconButton color='success' onClick={() => handleScrapSite(site)}>
-                            <UpdateIcon />
-                          </IconButton>
-                        </Tooltip>
-                        <Tooltip title='Registro de Actividad'>
-                          <IconButton>
-                            <DescriptionIcon />
-                          </IconButton>
-                        </Tooltip>
-                      </>
-                    )}
+                  <TableCell align='center' sx={{ color: theme.palette.primary.contrastText }}>
+                    Última Fecha de Scrapeo
+                  </TableCell>
+                  <TableCell align='center' sx={{ color: theme.palette.primary.contrastText }}>
+                    Acciones
                   </TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Box>
+              </TableHead>
 
-      <Box sx={{ display: 'flex', justifyContent: 'flex-start', paddingLeft: 2 }}>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component='div'
-          count={sortedWebSites.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-          labelRowsPerPage='Sitios por página'
+              <TableBody>
+                {sortedWebSites.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(site => (
+                  <TableRow key={site.id} sx={{ '&:hover': { backgroundColor: theme.palette.action.hover } }}>
+                    <TableCell
+                      align='center'
+                      sx={{
+                        minWidth: '150px', // Establece un ancho mínimo
+                        maxWidth: '300px',
+                        wordBreak: 'break-word',
+                        whiteSpace: 'normal'
+                      }}
+                    >
+                      {site.sobrenombre}
+                    </TableCell>
+                    <TableCell
+                      align='center'
+                      sx={{
+                        minWidth: '150px', // Establece un ancho mínimo
+                        maxWidth: '80vh',
+                        wordBreak: 'break-word',
+                        whiteSpace: 'normal',
+                        color: theme.palette.primary.contrastText
+                      }}
+                    >
+                      <span
+                        onClick={() => handleOpenUrlModal(site.url)}
+                        style={{
+                          cursor: 'pointer',
+                          fontWeight: 'bold',
+                          textDecoration: 'underline',
+                          color: theme.palette.mode === 'dark' ? 'white' : 'black',
+                          '&:hover': { color: theme.palette.mode === 'dark' ? 'lightgray' : 'secondary.main' }
+                        }}
+                      >
+                        {site.url.length > 100 ? `${site.url.slice(0, 100)}...` : site.url}
+                      </span>
+                    </TableCell>
+                    <TableCell align='center'>
+                      <Select
+                        value={site.time_choices} // El valor inicial de la frecuencia
+                        onChange={e => handleFrequencyChange(e, site)} // Maneja el cambio de frecuencia
+                        fullWidth
+                        size='small'
+                      >
+                        {frequencyOptions.map(option => (
+                          <MenuItem key={option.id} value={option.id}>
+                            {option.label}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </TableCell>
+                    <TableCell align='center'>{new Date(site.updated_at).toLocaleDateString()}</TableCell>
+                    <TableCell align='center'>
+                      {loadingSite === site.id ? (
+                        <Box display='flex' alignItems='center' justifyContent='center' gap={1}>
+                          <Typography variant='body2'>Scrapeando...</Typography> {/* Texto "Scrapeando..." */}
+                          <CircularProgress size={20} /> {/* Spinner */}
+                        </Box>
+                      ) : (
+                        <>
+                          <Tooltip title='Editar'>
+                            <IconButton color='info' onClick={() => handleOpenModal(site)}>
+                              <EditIcon />
+                            </IconButton>
+                          </Tooltip>
+                          <Tooltip title='Scrapear'>
+                            <IconButton color='success' onClick={() => handleScrapSite(site)}>
+                              <UpdateIcon />
+                            </IconButton>
+                          </Tooltip>
+                          <Tooltip title='Registro de Actividad'>
+                            <IconButton>
+                              <DescriptionIcon />
+                            </IconButton>
+                          </Tooltip>
+                        </>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Box>
+
+        <Box sx={{ display: 'flex', justifyContent: 'flex-start', paddingLeft: 2 }}>
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component='div'
+            count={sortedWebSites.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+            labelRowsPerPage='Sitios por página'
+          />
+        </Box>
+
+        <ParamsModal
+          open={isModalOpen}
+          setIsModalOpen={setIsModalOpen}
+          onClose={handleCloseModal}
+          web={selectedWeb}
+          mode={modalMode}
+          fetchWebSites={fetchWebSites}
         />
-      </Box>
+        <ViewUrlModal url={selectedUrl} open={isUrlModalOpen} onClose={handleCloseUrlModal} />
+      </Paper>
 
-      <ParamsModal
-        open={isModalOpen}
-        setIsModalOpen={setIsModalOpen}
-        onClose={handleCloseModal}
-        web={selectedWeb}
-        mode={modalMode}
-        fetchWebSites={fetchWebSites}
-      />
-      <ViewUrlModal url={selectedUrl} open={isUrlModalOpen} onClose={handleCloseUrlModal} />
-    </Paper>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      >
+        <Alert onClose={handleCloseSnackbar} severity='success' sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
+    </>
   )
 }
 

@@ -208,10 +208,10 @@ const UserDropdown = () => {
                     <i className='tabler-user text-[22px]' />
                     <Typography color='text.primary'>Mi perfil</Typography>
                   </MenuItem>
-                  <MenuItem className='mli-2 gap-3' onClick={e => handleDropdownClose(e, '/pages/account-settings')}>
+                  {/* <MenuItem className='mli-2 gap-3' onClick={e => handleDropdownClose(e, '/pages/account-settings')}>
                     <i className='tabler-settings text-[22px]' />
                     <Typography color='text.primary'>Ajustes</Typography>
-                  </MenuItem>
+                  </MenuItem> */}
                   {/* <MenuItem className='mli-2 gap-3' onClick={e => handleDropdownClose(e, '/pages/pricing')}>
                     <i className='tabler-currency-dollar text-[22px]' />
                     <Typography color='text.primary'>Pricing</Typography>

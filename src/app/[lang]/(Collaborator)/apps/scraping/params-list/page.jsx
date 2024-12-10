@@ -61,6 +61,16 @@ const ParamsListApp = () => {
     return updatedUrls
   }
 
+  const updateSingleWebsite = (siteId, updatedData) => {
+    setWebSites(prevWebSites =>
+      prevWebSites.map(site =>
+        site.id === siteId
+          ? { ...site, ...updatedData }
+          : site
+      )
+    )
+  }
+
   useEffect(() => {
     fetchWebSites()
   }, [fetchWebSites])
@@ -98,7 +108,7 @@ const ParamsListApp = () => {
     )
   }
 
-  return <ParamsListIndex webSites={webSites} fetchWebSites={fetchWebSites} />
+  return <ParamsListIndex webSites={webSites} fetchWebSites={fetchWebSites} updateSingleWebsite={updateSingleWebsite} />
 }
 
 export default ParamsListApp

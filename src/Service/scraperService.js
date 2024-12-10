@@ -6,7 +6,7 @@ export const listUrls = () => {
 };
 
 export const getUrlByParams = (url) => {
-  return API.get(`/api/v1/scraper-get-pdf/`, {
+  return API.get(`/api/v1/scraper-get-url/`, {
     params: {
       url: url
     }
